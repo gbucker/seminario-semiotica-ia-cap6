@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rastros da Cibernética</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: cabeçalho editorial curto → barra de controles → mapa (esquerda) + caderno de campo (direita) → como ler → limites → referências */
+:root{
+  --paper:#EEF1EC; --surface:#F8FAF6; --ink:#18201C; --muted:#56635C; --rule:#C6CEC6; --signal:#B4421F;
+  --t-pessoa:#2F62A8; --t-artefato:#B8541F; --t-texto:#5F7420; --t-inst:#8040A0; --t-conceito:#1E7F76;
+  --edge:#9AA59D;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#131815; --surface:#1B211E; --ink:#E4EAE5; --muted:#9AA79F; --rule:#323B36; --signal:#F07A50;
+  --t-pessoa:#7FA8EC; --t-artefato:#EE9460; --t-texto:#AFC567; --t-inst:#C795E2; --t-conceito:#5FC9BD;
+  --edge:#55605A; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#131815; --surface:#1B211E; --ink:#E4EAE5; --muted:#9AA79F; --rule:#323B36; --signal:#F07A50;
+  --t-pessoa:#7FA8EC; --t-artefato:#EE9460; --t-texto:#AFC567; --t-inst:#C795E2; --t-conceito:#5FC9BD;
+  --edge:#55605A; color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 56px}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px 48px;align-items:end;border-bottom:1px solid var(--rule);padding-bottom:22px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(44px,7vw,84px);line-height:.92;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 em{color:var(--signal)}
+.lede{margin:0;max-width:60ch;color:var(--ink)}
+.lede small{display:block;color:var(--muted);margin-top:8px;font-size:13.5px}
+h2{font-family:var(--f-display);font-weight:400;font-size:34px;line-height:1.05;margin:0;text-wrap:balance}
+h3{font-size:13px;font-family:var(--f-mono);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin:0;color:var(--muted)}
+
+.controls{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.group > span{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+button,select{font:inherit;color:inherit}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 14px;font-size:13.5px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.chip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--signal);color:var(--signal);background:transparent;box-shadow:inset 0 0 0 1px var(--signal)}
+select{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px;font-size:13.5px;max-width:100%}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.map{position:relative;border:1px solid var(--rule);background:var(--surface);border-radius:4px;overflow:hidden;height:min(74vh,660px);min-height:440px}
+.map svg{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.legend{position:absolute;left:12px;bottom:10px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);pointer-events:none;max-width:calc(100% - 24px)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+.hint{position:absolute;right:12px;top:10px;font-family:var(--f-mono);font-size:11px;color:var(--muted);pointer-events:none}
+
+.node circle{stroke:var(--surface);stroke-width:1.5;cursor:pointer}
+.node text{font-family:var(--f-body);font-size:11px;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none;opacity:0}
+.node.lab text,.zoomed .node text{opacity:1}
+.node.sel circle{stroke:var(--ink);stroke-width:2.5}
+.link{stroke:var(--edge);stroke-width:1;fill:none;opacity:.7}
+.dim .node:not(.on){opacity:.18}
+.dim .link:not(.on){opacity:.08}
+.link.on{stroke:var(--signal);opacity:.95;stroke-width:1.6}
+.node.on text{opacity:1}
+.axis text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+.axis line{stroke:var(--rule);stroke-dasharray:2 4}
+
+aside.panel{border-top:3px solid var(--ink);padding-top:14px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel .kind{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.panel h2{font-size:30px}
+.panel p{margin:0}
+.year{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.trail{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--rule)}
+.trail li{border-bottom:1px solid var(--rule)}
+.trail button{display:block;width:100%;text-align:left;background:none;border:0;padding:8px 0;cursor:pointer;font-size:13.5px;line-height:1.35}
+.trail button:hover strong{color:var(--signal)}
+.trail .verb{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.stats{display:flex;gap:20px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.stats b{display:block;font-family:var(--f-display);font-weight:400;font-size:34px;line-height:1}
+.stats span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;border:1px solid var(--rule);border-radius:999px;padding:2px 9px;color:var(--muted)}
+
+section.read{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:24px 48px;border-top:1px solid var(--rule);padding-top:26px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 32px}
+.cols div{display:flex;flex-direction:column;gap:6px}
+.cols h4{margin:0;font-size:15px;font-weight:600}
+.cols p,.read > div > p{margin:0;max-width:65ch;color:var(--ink)}
+.refs{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
+.refs cite{font-style:italic;color:var(--ink)}
+
+@media (max-width:900px){
+  header{grid-template-columns:1fr}
+  .stage{grid-template-columns:1fr}
+  section.read{grid-template-columns:1fr}
+}
+@media (max-width:560px){ .cols{grid-template-columns:1fr} .map{height:62vh;min-height:400px} }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header>
+  <div>
+    <p class="eyebrow">Cartografia de controvérsias · 1941–2025</p>
+    <h1>Rastros da <em>cibernética</em></h1>
+  </div>
+  <p class="lede">Da retroalimentação aos agentes de IA, seguidos como uma rede de associações entre pessoas, máquinas, textos, instituições e conceitos. Cada linha é um verbo: alguém escreve, financia, critica, retoma.
+  <small>Isto não é uma linha do tempo nem uma rede “real”. É um rastro, montado a partir de uma seleção, e só existe enquanto é lido.</small></p>
+</header>
+
+<div class="controls">
+  <div class="group"><span>Disposição</span>
+    <div class="seg" role="group" aria-label="Disposição do mapa">
+      <button id="mode-free" aria-pressed="true">Associações</button>
+      <button id="mode-time" aria-pressed="false">Cronologia</button>
+    </div>
+  </div>
+  <div class="group" id="chips"><span>Controvérsias</span></div>
+  <div class="group"><span>Actante</span>
+    <select id="pick" aria-label="Escolher actante"><option value="">Escolha…</option></select>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="map" id="map">
+    <svg id="svg" aria-label="Rede de associações entre actantes da cibernética à IA agêntica"></svg>
+    <div class="hint">arraste · role para aproximar</div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <aside class="panel" id="panel" aria-live="polite"></aside>
+</div>
+
+<section class="read">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <h2>Como ler este mapa</h2>
+    <p>Segundo Venturini, Jacomy e Jensen (2021), uma rede espacializada por forças se lê por regiões, não por coordenadas. Os eixos não significam nada no modo Associações. A proximidade resulta de ligações que atraem e de nós que se repelem.</p>
+  </div>
+  <div class="cols">
+    <div><h4>Aglomerados</h4><p>Grupos densos indicam actantes muito associados entre si. Procure o núcleo das Conferências Macy e o núcleo dos modelos de linguagem. Note o que fica entre eles.</p></div>
+    <div><h4>Pontes</h4><p>Nós que ligam regiões distantes, como Hinton, a retroalimentação ou o conceito de agente. Por eles passam as traduções entre épocas.</p></div>
+    <div><h4>Buracos estruturais</h4><p>Vazios entre regiões mostram onde as associações rareiam. A separação entre a cibernética de segunda ordem e a IA estatística é um deles.</p></div>
+    <div><h4>Centro e periferia</h4><p>O tamanho do nó acompanha o número de associações. Ser central aqui diz respeito à seleção feita, não à importância histórica.</p></div>
+    <div><h4>Ambiguidade relacional</h4><p>Uma linha iguala relações de natureza diferente: escrever, financiar, criticar. Os autores tratam essa ambiguidade como produtiva, desde que se volte aos dados. Aqui o verbo de cada ligação aparece no painel.</p></div>
+    <div><h4>Dois modos, dois mapas</h4><p>O modo Cronologia impõe um eixo de datas. Compare os dois: a linha do tempo sugere progresso e sucessão, a rede mostra retornos, como o propósito em máquinas (1943) reaparecendo no alinhamento.</p></div>
+  </div>
+</section>
+
+<section class="read">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <h2>Limites deste rastro</h2>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <p>Seguindo Venturini, a cartografia deveria observar sem impor categorias, seguir os próprios actantes e dar lugar a vários pontos de vista. Este mapa faz isso só em parte. A seleção de cerca de setenta actantes e de seus verbos é uma decisão autoral, não uma coleta sistemática de dados.</p>
+    <p>A rede é centrada nos Estados Unidos e no Reino Unido. O Chile aparece pelo Cybersyn e por Maturana e Varela, mas faltam outras cibernéticas, como a soviética. O trabalho invisível foi incluído de propósito, nas programadoras do ENIAC e nos anotadores de dados, porque é o tipo de actante que linhas do tempo costumam apagar.</p>
+  </div>
+</section>
+
+<section class="read">
+  <h2>Referências</h2>
+  <ol class="refs">
+    <li>Venturini, T.; Jacomy, M.; Jensen, P. <cite>What do we see when we look at networks: visual network analysis, relational ambiguity, and force-directed layouts</cite>. Big Data &amp; Society, 2021.</li>
+    <li>Venturini, T. <cite>Diving in magma: how to explore controversies with actor-network theory</cite>. Public Understanding of Science, 2010.</li>
+    <li>Venturini, T.; Munk, A. K. <cite>Controversy Mapping: A Field Guide</cite>. Polity, 2022.</li>
+    <li>Jacomy, M. et al. <cite>ForceAtlas2, a continuous graph layout algorithm for handy network visualization</cite>. PLoS ONE, 2014.</li>
+    <li>Latour, B. <cite>Science in Action</cite>. Harvard University Press, 1987; <cite>Reassembling the Social</cite>. Oxford University Press, 2005.</li>
+    <li>Hayles, N. K. <cite>How We Became Posthuman</cite>. University of Chicago Press, 1999.</li>
+  </ol>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const TYPES={pessoa:"Pessoa ou coletivo",artefato:"Máquina ou artefato",texto:"Texto",inst:"Instituição ou evento",conceito:"Conceito"};
+const CONTRO={
+ pensar:{t:"As máquinas pensam?",d:"Da pergunta de Turing ao efeito ELIZA e aos chatbots. O que conta como pensar, e quem decide?"},
+ simb:{t:"Símbolos ou conexões?",d:"Regras explícitas ou redes que aprendem? A disputa atravessa Dartmouth, o livro Perceptrons, os invernos da IA e a volta das redes profundas."},
+ obs:{t:"Onde fica o observador?",d:"A primeira cibernética olha sistemas de fora. A segunda põe o observador dentro do sistema. Hayles mostra o que se perdeu quando a informação se separou do corpo."},
+ poder:{t:"Guerra, governo e trabalho",d:"Quem financia, quem programa, quem rotula. Do preditor antiaéreo ao Cybersyn e aos anotadores de dados."},
+ agencia:{t:"Quem age?",d:"Com agentes que usam ferramentas, a questão de 1943 sobre propósito em máquinas volta. Para a teoria ator-rede, a ação é sempre distribuída."}
+};
+const N=[
+["predictor","Preditor antiaéreo",1941,"artefato","Durante a Segunda Guerra, Wiener e Julian Bigelow trabalham num aparelho que antecipa a trajetória de aviões a partir do comportamento do piloto. Nunca entrou em operação, mas deu o problema de partida da cibernética."],
+["wiener","Norbert Wiener",1941,"pessoa","Matemático do MIT. Dá nome ao campo e o define como estudo do controle e da comunicação no animal e na máquina."],
+["teleology","Behavior, Purpose and Teleology",1943,"texto","Artigo de Rosenblueth, Wiener e Bigelow. Propõe que comportamento com propósito pode ser descrito por retroalimentação negativa, em animais e em máquinas."],
+["mcculloch","Warren McCulloch",1943,"pessoa","Neurofisiologista. Coautor do modelo lógico do neurônio e presidente das Conferências Macy."],
+["pitts","Walter Pitts",1943,"pessoa","Lógico autodidata, coautor com McCulloch do modelo do neurônio como unidade de limiar."],
+["logicalcalculus","A Logical Calculus… (McCulloch & Pitts)",1943,"texto","Modela neurônios como unidades lógicas que disparam ou não. É a base remota das redes neurais e foi citado por von Neumann."],
+["vonneumann","John von Neumann",1945,"pessoa","Seu rascunho de relatório sobre o EDVAC (1945) fixa a arquitetura dos computadores digitais e cita McCulloch e Pitts. Participou das Macy."],
+["eniac","ENIAC",1946,"artefato","Computador eletrônico de uso geral apresentado em 1946 na Universidade da Pensilvânia, financiado pelo Exército dos EUA para calcular tabelas de tiro."],
+["programadoras","Programadoras do ENIAC",1946,"pessoa","Kathleen McNulty, Jean Jennings, Betty Snyder, Marlyn Wescoff, Frances Bilas e Ruth Lichterman programaram o ENIAC. Ficaram décadas fora da história oficial."],
+["macy","Conferências Macy",1946,"inst","Dez encontros entre 1946 e 1953, patrocinados pela Fundação Josiah Macy Jr. Reuniram matemáticos, neurofisiologistas, antropólogos e psiquiatras em torno de uma linguagem comum."],
+["cybernetics","Cybernetics (Wiener)",1948,"texto","Livro de 1948 com o subtítulo Control and Communication in the Animal and the Machine. Populariza o termo."],
+["shannon","Claude Shannon",1948,"pessoa","Engenheiro dos Bell Labs. Formaliza a informação e coassina a proposta de Dartmouth."],
+["mtc","Teoria matemática da comunicação",1948,"texto","Artigo de Shannon. Mede informação como redução de incerteza e deixa o significado de fora de propósito."],
+["ashby","W. Ross Ashby",1948,"pessoa","Psiquiatra britânico. Constrói o homeostato, escreve Design for a Brain (1952) e An Introduction to Cybernetics (1956), com a caixa-preta e a lei da variedade requisita."],
+["homeostat","Homeostato",1948,"artefato","Quatro unidades eletromecânicas interligadas que recuperam o equilíbrio reconfigurando-se ao acaso. Ashby chamou isso de ultraestabilidade."],
+["walter","W. Grey Walter",1948,"pessoa","Neurofisiologista em Bristol. Construiu robôs simples que exibiam comportamentos complexos."],
+["tortoises","Tartarugas de Grey Walter",1949,"artefato","Elmer e Elsie, robôs com poucos componentes que buscam a luz e evitam obstáculos. Comportamento sem representação interna."],
+["bateson","Gregory Bateson",1946,"pessoa","Antropólogo presente nas Macy. Leva a cibernética para comunicação, ecologia e psiquiatria e define informação como uma diferença que faz diferença."],
+["mead","Margaret Mead",1946,"pessoa","Antropóloga presente nas Macy. Em 1968 propõe aplicar a cibernética à própria comunidade cibernética."],
+["turing","Alan Turing",1950,"pessoa","Matemático britânico, autor da máquina universal (1936) e do jogo da imitação."],
+["cmi","Computing Machinery and Intelligence",1950,"texto","Artigo de Turing que troca a pergunta “máquinas podem pensar?” por um teste de imitação conversacional."],
+["mccarthy","John McCarthy",1955,"pessoa","Cunha a expressão inteligência artificial na proposta de Dartmouth. Mais tarde disse que a escolha também servia para se afastar da cibernética e de Wiener."],
+["minsky","Marvin Minsky",1956,"pessoa","Coorganizador de Dartmouth e líder do grupo de IA do MIT. Coautor de Perceptrons."],
+["dartmouth","Workshop de Dartmouth",1956,"inst","Projeto de pesquisa de verão em 1956, proposto por McCarthy, Minsky, Rochester e Shannon. Marco de fundação da IA como campo."],
+["logictheorist","Logic Theorist",1956,"artefato","Programa de Newell, Shaw e Simon que demonstra teoremas dos Principia Mathematica. Apresentado em Dartmouth."],
+["rosenblatt","Frank Rosenblatt",1958,"pessoa","Psicólogo em Cornell. Desenvolve o perceptron, com financiamento da Marinha dos EUA."],
+["perceptron","Mark I Perceptron",1958,"artefato","Máquina que aprende a classificar imagens ajustando pesos. Gerou grande expectativa na imprensa."],
+["vonfoerster","Heinz von Foerster",1958,"pessoa","Editor dos anais das Macy. Funda o BCL e formula a cibernética de segunda ordem."],
+["bcl","Biological Computer Laboratory",1958,"inst","Laboratório da Universidade de Illinois (1958–1976). Centro da cibernética de segunda ordem."],
+["darpa","ARPA / DARPA",1958,"inst","Agência de pesquisa do Departamento de Defesa, criada em 1958. A partir de 1963 financia o Project MAC no MIT, incluindo o grupo de IA."],
+["eliza","ELIZA",1966,"artefato","Programa de Weizenbaum (MIT) que imita um psicoterapeuta. Usuários atribuíam compreensão a ele, o que ficou conhecido como efeito ELIZA."],
+["weizenbaum","Joseph Weizenbaum",1966,"pessoa","Criador do ELIZA. Tornou-se um dos principais críticos da delegação de decisões a computadores."],
+["perceptronsbook","Perceptrons (Minsky & Papert)",1969,"texto","Livro que demonstra limites dos perceptrons de uma camada. Associado ao recuo do financiamento a redes neurais."],
+["dreyfus","Hubert Dreyfus",1972,"pessoa","Filósofo. Em What Computers Can't Do (1972) faz uma crítica fenomenológica à IA simbólica."],
+["maturana","Maturana e Varela",1972,"pessoa","Biólogos chilenos. Formulam a autopoiese. A Biologia da Cognição de Maturana saiu como relatório do BCL (1970)."],
+["beer","Stafford Beer",1971,"pessoa","Cibernético britânico, autor do Modelo de Sistema Viável."],
+["cybersyn","Projeto Cybersyn",1971,"artefato","Rede de telex e sala de operações para gerir a economia chilena no governo Allende (1971–1973). Interrompido pelo golpe de 1973."],
+["lighthill","Relatório Lighthill",1973,"texto","Avaliação da IA para o conselho de pesquisa britânico. Leva a cortes no Reino Unido e marca o primeiro inverno da IA."],
+["mycin","MYCIN",1974,"artefato","Sistema especialista de Stanford, baseado em regras, para diagnóstico de infecções bacterianas."],
+["cpr","Computer Power and Human Reason",1976,"texto","Livro de Weizenbaum. Defende que certas decisões não devem ser delegadas a computadores."],
+["cyborg","Manifesto Ciborgue (Haraway)",1985,"texto","Reapropria a figura cibernética do ciborgue para borrar fronteiras entre humano, animal e máquina."],
+["haraway","Donna Haraway",1985,"pessoa","Bióloga e teórica feminista dos estudos de ciência."],
+["hinton","Geoffrey Hinton",1986,"pessoa","Coautor da retropropagação e orientador da equipe do AlexNet. Ponte entre o conexionismo dos anos 1980 e o aprendizado profundo."],
+["backprop","Retropropagação (Nature, 1986)",1986,"texto","Rumelhart, Hinton e Williams mostram como redes de várias camadas aprendem representações internas ajustando erros."],
+["latour","Bruno Latour",1987,"pessoa","Sociólogo e filósofo, um dos formuladores da teoria ator-rede e da simetria entre humanos e não humanos."],
+["scienceaction","Science in Action",1987,"texto","Livro de Latour. A caixa-preta é o fato ou a máquina que se estabilizou e deixou de ser aberta."],
+["brooks","Rodney Brooks",1991,"pessoa","Roboticista do MIT. Arquitetura de subsunção e robôs reativos."],
+["iwr","Intelligence without representation",1991,"texto","Artigo de Brooks contra modelos simbólicos centralizados de mundo."],
+["posthuman","How We Became Posthuman",1999,"texto","Livro de Hayles que reconstrói as Macy e critica como a informação perdeu o corpo."],
+["hayles","N. Katherine Hayles",1999,"pessoa","Crítica literária e teórica do pós-humano."],
+["gpu","GPUs e CUDA",2007,"artefato","A NVIDIA lança o CUDA em 2007, abrindo placas gráficas à computação geral. Torna viável treinar redes grandes."],
+["imagenet","ImageNet",2009,"inst","Base de imagens rotuladas criada por Fei-Fei Li e colegas, com rotulagem feita no Amazon Mechanical Turk. Sustenta um concurso anual desde 2010."],
+["anotadores","Anotadores de dados",2009,"pessoa","Trabalhadores de plataformas que rotulam imagens e avaliam respostas de modelos. Parte pouco visível da produção de IA."],
+["alexnet","AlexNet",2012,"artefato","Rede de Krizhevsky, Sutskever e Hinton que vence o concurso ImageNet de 2012 por larga margem, treinada em GPUs."],
+["alphago","AlphaGo",2016,"artefato","Sistema da DeepMind que vence Lee Sedol em 2016. Combina redes neurais, busca e aprendizado por reforço."],
+["lecun","Yann LeCun",1989,"pessoa","Pesquisador dos Bell Labs que desenvolve redes convolucionais treinadas por retropropagação. Prêmio Turing de 2018 com Hinton e Bengio."],
+["lenet","Redes convolucionais (LeNet)",1989,"artefato","LeCun e colegas treinam por retropropagação redes que reconhecem dígitos manuscritos (1989–1998). Foram usadas para ler cheques nos EUA e são a linhagem direta do AlexNet."],
+["lstm","LSTM (Hochreiter & Schmidhuber)",1997,"texto","Long Short-Term Memory: unidades recorrentes com portas que contornam o desvanecimento do gradiente e permitem aprender dependências longas em sequências."],
+["bengio","Yoshua Bengio",2003,"pessoa","Pesquisador em Montreal. Propõe modelos neurais de linguagem e coassina o artigo que introduz a atenção na tradução automática."],
+["nplm","Modelo neural de linguagem (Bengio et al.)",2003,"texto","A Neural Probabilistic Language Model aprende vetores para palavras ao prever a próxima palavra. Antecipa os embeddings."],
+["dbn","Deep belief nets (Hinton et al.)",2006,"texto","Hinton, Osindero e Teh propõem pré-treinar redes profundas camada por camada. Marca a retomada das redes neurais sob o nome deep learning."],
+["deeplearning","Deep learning",2006,"conceito","Redes com muitas camadas que aprendem representações hierárquicas a partir de dados. Depende de três condições materiais: algoritmos, dados rotulados em massa e GPUs."],
+["word2vec","word2vec",2013,"artefato","Mikolov et al. (Google) treinam vetores de palavras em grande escala. Torna os embeddings uma peça padrão do processamento de linguagem."],
+["seq2seq","Sequence to Sequence (Sutskever et al.)",2014,"texto","Sutskever, Vinyals e Le usam duas LSTMs, codificador e decodificador, para tradução. Toda a frase de entrada é comprimida num único vetor."],
+["atencao2014","Atenção (Bahdanau, Cho & Bengio)",2014,"texto","Para resolver o gargalo do vetor único, o decodificador passa a consultar todos os estados do codificador, pesando cada um. É a atenção que o transformer tornará o mecanismo principal."],
+["transformer","Attention Is All You Need",2017,"texto","Artigo do Google (Vaswani et al.) que propõe o transformer. Remove a recorrência das LSTMs e mantém só a atenção, o que permite paralelizar o treino em GPUs."],
+["gpt3","GPT-3",2020,"artefato","Modelo de linguagem da OpenAI que executa tarefas a partir de instruções e exemplos no prompt."],
+["instructgpt","InstructGPT / RLHF",2022,"texto","Ouyang et al. ajustam modelos com preferências humanas (aprendizado por reforço com feedback humano)."],
+["chatgpt","ChatGPT",2022,"artefato","Lançado em novembro de 2022. Leva o modelo conversacional ao grande público."],
+["react","ReAct",2022,"texto","Yao et al. intercalam raciocínio em texto e ações, como buscas e chamadas a ferramentas, num mesmo laço."],
+["autogpt","AutoGPT",2023,"artefato","Projeto aberto de 2023 que encadeia chamadas a um modelo de linguagem para perseguir metas com pouca intervenção humana."],
+["computeruse","Agentes que usam o computador",2024,"artefato","A partir de 2024, modelos que veem a tela e controlam mouse e teclado em interfaces feitas para humanos."],
+["mcp","Model Context Protocol",2024,"artefato","Padrão aberto lançado pela Anthropic em novembro de 2024 para conectar modelos a ferramentas e fontes de dados."],
+["codeagents","Agentes de código",2025,"artefato","Ferramentas que leem repositórios, executam comandos e testes e iteram até concluir tarefas de programação."],
+["feedback","Retroalimentação",1943,"conceito","A saída é medida e devolvida para corrigir a ação. Conceito central da cibernética."],
+["informacao","Informação",1948,"conceito","Para Shannon, redução de incerteza sem significado. Para Bateson, uma diferença que faz diferença. A disputa nunca se fechou."],
+["homeostase","Homeostase",1948,"conceito","Termo de Walter Cannon para a manutenção de estados internos estáveis, que Ashby mecaniza."],
+["caixapreta","Caixa-preta",1956,"conceito","Para Ashby, sistema conhecido só por entradas e saídas. Para Latour, o que se estabilizou e deixou de ser discutido."],
+["simbolica","IA simbólica",1956,"conceito","Inteligência como manipulação de símbolos e regras explícitas."],
+["conexionismo","Conexionismo",1943,"conceito","Aprendizagem por ajuste de pesos em redes de unidades simples."],
+["autopoiese","Autopoiese",1972,"conceito","Sistemas vivos como sistemas que produzem continuamente os componentes que os produzem."],
+["segundaordem","Cibernética de segunda ordem",1974,"conceito","Cibernética dos sistemas que observam. O observador faz parte do que observa."],
+["agente","Agente",1995,"conceito","Russell e Norvig (1995) definem a IA como o estudo de agentes que percebem e agem. O termo volta com modelos de linguagem que usam ferramentas."],
+["alinhamento","Alinhamento",2017,"conceito","Fazer sistemas buscarem os objetivos pretendidos por humanos. Christiano et al. (2017) propõem aprender a partir de preferências humanas."]
+].map(([id,label,year,type,desc])=>({id,label,year,type,desc}));
+
+const E=[
+["wiener","predictor","projeta","poder"],["predictor","teleology","inspira",""],["wiener","teleology","coassina",""],
+["teleology","feedback","formula","agencia"],["teleology","macy","prepara",""],
+["mcculloch","logicalcalculus","coassina",""],["pitts","logicalcalculus","coassina",""],["logicalcalculus","conexionismo","funda","simb"],
+["logicalcalculus","vonneumann","é citado por",""],["vonneumann","eniac","parte do ENIAC para o EDVAC","poder"],["programadoras","eniac","programam","poder"],
+["mcculloch","macy","preside",""],["wiener","macy","participa",""],["vonneumann","macy","participa",""],["bateson","macy","participa",""],
+["mead","macy","participa",""],["shannon","macy","apresenta",""],["vonfoerster","macy","edita os anais",""],["ashby","macy","apresenta",""],["pitts","macy","participa",""],
+["macy","feedback","difunde",""],["macy","informacao","disputa o sentido de","obs"],
+["wiener","cybernetics","escreve",""],["cybernetics","feedback","generaliza",""],["cybernetics","informacao","incorpora",""],
+["shannon","mtc","escreve",""],["mtc","informacao","define sem significado","obs"],["bateson","informacao","redefine como diferença","obs"],
+["bateson","segundaordem","antecipa","obs"],["mead","segundaordem","propõe","obs"],
+["ashby","homeostat","constrói",""],["homeostat","homeostase","mecaniza",""],["ashby","caixapreta","teoriza",""],
+["walter","tortoises","constrói",""],["tortoises","agente","agem sem representação","agencia"],["brooks","tortoises","retoma","agencia"],
+["brooks","iwr","escreve",""],["iwr","simbolica","critica","simb"],
+["turing","cmi","escreve",""],["cmi","eliza","é encenado por","pensar"],["turing","vonneumann","dialoga com",""],
+["mccarthy","dartmouth","organiza",""],["minsky","dartmouth","organiza",""],["shannon","dartmouth","copropõe",""],
+["dartmouth","simbolica","consagra","simb"],["dartmouth","cybernetics","se afasta de","simb"],
+["logictheorist","dartmouth","é apresentado em",""],["logictheorist","simbolica","exemplifica","simb"],
+["rosenblatt","perceptron","constrói",""],["perceptron","conexionismo","materializa","simb"],
+["minsky","perceptronsbook","escreve com Papert",""],["perceptronsbook","perceptron","critica","simb"],
+["darpa","minsky","financia","poder"],["darpa","simbolica","financia","poder"],
+["weizenbaum","eliza","cria",""],["weizenbaum","cpr","escreve",""],["cpr","eliza","reavalia","pensar"],
+["dreyfus","whatcomputers_x","",""],
+["lighthill","simbolica","corta fundos de","poder"],["mycin","simbolica","aplica","simb"],
+["vonfoerster","bcl","funda",""],["bcl","segundaordem","elabora","obs"],["vonfoerster","segundaordem","formula","obs"],
+["maturana","autopoiese","formula","obs"],["maturana","bcl","publica pelo",""],["autopoiese","segundaordem","alimenta","obs"],
+["beer","cybersyn","projeta","poder"],["cybersyn","feedback","aplica ao governo","poder"],["beer","ashby","aplica a variedade de","poder"],
+["hinton","backprop","coassina",""],["backprop","conexionismo","revive","simb"],["backprop","perceptronsbook","responde a","simb"],
+["haraway","cyborg","escreve",""],["cyborg","agente","dissolve as fronteiras do","agencia"],["cyborg","cybernetics","reapropria",""],
+["hayles","posthuman","escreve",""],["posthuman","macy","reconstrói","obs"],["posthuman","informacao","critica o descorpo da","obs"],["hayles","haraway","dialoga com",""],
+["latour","scienceaction","escreve",""],["scienceaction","caixapreta","redefine",""],["latour","agente","estende aos não humanos","agencia"],["haraway","latour","dialoga com",""],
+["gpu","alexnet","viabiliza",""],["imagenet","alexnet","treina",""],["anotadores","imagenet","rotulam","poder"],["hinton","alexnet","orienta",""],["alexnet","conexionismo","consolida","simb"],
+["alphago","agente","age por reforço","agencia"],["alphago","conexionismo","escala",""],["gpu","alphago","viabiliza",""],
+["backprop","lenet","treina",""],["lecun","lenet","desenvolve",""],["lenet","alexnet","é a linhagem de",""],
+["backprop","lstm","é estendida no tempo em",""],["lstm","seq2seq","compõe",""],
+["bengio","nplm","coassina",""],["nplm","word2vec","prepara","simb"],["bengio","atencao2014","coassina",""],
+["hinton","dbn","coassina",""],["dbn","deeplearning","rebatiza o campo como","simb"],["deeplearning","conexionismo","atualiza","simb"],
+["alexnet","deeplearning","consagra","simb"],["gpu","deeplearning","acelera","poder"],["imagenet","deeplearning","fornece dados a","poder"],
+["lecun","deeplearning","defende",""],["bengio","deeplearning","defende",""],
+["word2vec","seq2seq","fornece embeddings a",""],["seq2seq","atencao2014","expõe o gargalo que motiva",""],
+["atencao2014","transformer","torna-se o único mecanismo do",""],["lstm","transformer","é substituída pelo",""],["word2vec","transformer","fornece embeddings ao",""],["deeplearning","transformer","culmina em",""],
+["transformer","gpt3","fornece a arquitetura de",""],["gpu","transformer","escala",""],["gpt3","instructgpt","é ajustado em",""],
+["instructgpt","alinhamento","operacionaliza","agencia"],["anotadores","instructgpt","avaliam respostas para","poder"],["instructgpt","chatgpt","precede",""],
+["chatgpt","cmi","reabre o jogo de","pensar"],["chatgpt","eliza","reativa o efeito","pensar"],
+["react","agente","laço de raciocinar e agir","agencia"],["react","gpt3","usa modelos como",""],["react","autogpt","inspira",""],
+["autogpt","chatgpt","encadeia chamadas a",""],["autogpt","feedback","laço de auto-instrução","agencia"],
+["computeruse","agente","age em interfaces humanas","agencia"],["computeruse","chatgpt","estende",""],
+["mcp","agente","padroniza ferramentas do","agencia"],["mcp","caixapreta","encapsula ferramentas como","agencia"],
+["codeagents","mcp","usa",""],["codeagents","react","prolonga o ciclo de","agencia"],["codeagents","feedback","itera com testes","agencia"],["codeagents","alinhamento","exige supervisão de","agencia"],
+["alinhamento","teleology","reabre o propósito de","agencia"],["latour","caixapreta","abre",""],
+["dreyfus","simbolica","critica","pensar"],["dreyfus","cmi","contesta","pensar"]
+].filter(e=>e[1]!=="whatcomputers_x").map(([s,t,label,c])=>({source:s,target:t,label,c}));
+
+const byId=new Map(N.map(n=>[n.id,n]));
+N.forEach(n=>n.deg=0); E.forEach(e=>{byId.get(e.source).deg++;byId.get(e.target).deg++;});
+const R=n=>4+Math.sqrt(n.deg)*2.8;
+const colorVar=t=>`var(--t-${t})`;
+
+const svg=d3.select("#svg"), mapEl=document.getElementById("map");
+let W=mapEl.clientWidth,H=mapEl.clientHeight;
+const root=svg.append("g"), axisG=root.append("g").attr("class","axis"), linkG=root.append("g"), nodeG=root.append("g");
+const xTime=()=>d3.scaleLinear().domain([1940,2026]).range([50,Math.max(W,700)-50]);
+N.forEach(n=>{n.x=xTime()(n.year);n.y=H/2+(Math.random()-.5)*H*.6;});
+
+const link=linkG.selectAll("line").data(E).join("line").attr("class","link");
+const node=nodeG.selectAll("g").data(N).join("g").attr("class",d=>"node"+(d.deg>=5?" lab":""));
+node.append("circle").attr("r",R).style("fill",d=>colorVar(d.type));
+node.append("text").attr("dy",d=>-R(d)-4).attr("text-anchor","middle").text(d=>d.label);
+node.append("title").text(d=>`${d.label} (${d.year})`);
+
+let mode="free";
+const sim=d3.forceSimulation(N)
+  .force("link",d3.forceLink(E).id(d=>d.id).distance(46).strength(.5))
+  .force("charge",d3.forceManyBody().strength(-170))
+  .force("collide",d3.forceCollide(d=>R(d)+3))
+  .on("tick",draw);
+function applyMode(){
+  if(mode==="free"){
+    sim.force("x",d3.forceX(W/2).strength(.05)).force("y",d3.forceY(H/2).strength(.07));
+    sim.force("link").strength(.5); axisG.attr("display","none");
+  }else{
+    const xs=xTime(); sim.force("x",d3.forceX(d=>xs(d.year)).strength(1)).force("y",d3.forceY(H/2).strength(.06));
+    sim.force("link").strength(.05); drawAxis(xs); axisG.attr("display",null);
+  }
+}
+function drawAxis(xs){
+  const ticks=d3.range(1940,2030,10);
+  axisG.selectAll("g").data(ticks).join(en=>{const g=en.append("g");g.append("line");g.append("text");return g;})
+   .attr("transform",d=>`translate(${xs(d)},0)`)
+   .call(g=>g.select("line").attr("y1",-2000).attr("y2",4000))
+   .call(g=>g.select("text").attr("y",22).attr("x",4).text(d=>d+"s"));
+}
+function draw(){
+  link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  node.attr("transform",d=>`translate(${d.x},${d.y})`);
+}
+const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function run(){applyMode(); if(reduce){sim.stop();sim.alpha(1);for(let i=0;i<320;i++)sim.tick();draw();}else{sim.alpha(.9).restart();}}
+run();
+
+const zoom=d3.zoom().scaleExtent([.4,4]).on("zoom",ev=>{root.attr("transform",ev.transform);mapEl.classList.toggle("zoomed",ev.transform.k>1.6);});
+svg.call(zoom);
+node.call(d3.drag()
+  .on("start",(ev,d)=>{if(!ev.active&&!reduce)sim.alphaTarget(.2).restart();d.fx=d.x;d.fy=d.y;})
+  .on("drag",(ev,d)=>{d.fx=ev.x;d.fy=ev.y;if(reduce){d.x=ev.x;d.y=ev.y;draw();}})
+  .on("end",(ev,d)=>{if(!ev.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
+node.on("click",(ev,d)=>{ev.stopPropagation();select(d.id);});
+svg.on("click",()=>select(null));
+
+// legenda, chips, seletor
+document.getElementById("legend").innerHTML=Object.entries(TYPES).map(([k,v])=>`<span><i style="background:${colorVar(k)}"></i>${v}</span>`).join("");
+const chips=document.getElementById("chips");
+Object.entries(CONTRO).forEach(([k,v])=>{const b=document.createElement("button");b.className="chip";b.textContent=v.t;b.dataset.c=k;b.setAttribute("aria-pressed","false");b.onclick=()=>setContro(active===k?null:k);chips.appendChild(b);});
+const pick=document.getElementById("pick");
+[...N].sort((a,b)=>a.label.localeCompare(b.label,"pt")).forEach(n=>{const o=document.createElement("option");o.value=n.id;o.textContent=n.label;pick.appendChild(o);});
+pick.onchange=()=>select(pick.value||null);
+["free","time"].forEach(m=>document.getElementById("mode-"+m).onclick=()=>{mode=m;document.getElementById("mode-free").setAttribute("aria-pressed",m==="free");document.getElementById("mode-time").setAttribute("aria-pressed",m==="time");run();});
+
+let active=null, selected=null;
+const panel=document.getElementById("panel");
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const eid=x=>typeof x==="object"?x.id:x;
+function setContro(c){active=c;selected=null;pick.value="";
+  chips.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===c));highlight();render();}
+function select(id){selected=id;pick.value=id||"";highlight();render();}
+function highlight(){
+  const on=new Set(), eon=new Set();
+  if(selected){on.add(selected);E.forEach((e,i)=>{if(eid(e.source)===selected||eid(e.target)===selected){eon.add(i);on.add(eid(e.source));on.add(eid(e.target));}});}
+  else if(active){E.forEach((e,i)=>{if(e.c===active){eon.add(i);on.add(eid(e.source));on.add(eid(e.target));}});}
+  const dim=!!(selected||active);
+  mapEl.querySelector("svg").classList.toggle("dim",dim);
+  node.classed("on",d=>on.has(d.id)).classed("sel",d=>d.id===selected);
+  link.classed("on",(d,i)=>eon.has(i));
+}
+function edgeItem(e,from){
+  const s=byId.get(eid(e.source)),t=byId.get(eid(e.target));
+  const other=from===s.id?t:from===t.id?s:null;
+  const txt=from===s.id?`<span class="verb">${esc(e.label)} →</span> <strong>${esc(t.label)}</strong>`:
+            from===t.id?`<strong>${esc(s.label)}</strong> <span class="verb">→ ${esc(e.label)}</span>`:
+            `<strong>${esc(s.label)}</strong> <span class="verb">${esc(e.label)}</span> <strong>${esc(t.label)}</strong>`;
+  return `<li><button data-go="${other?other.id:s.id}">${txt}</button></li>`;
+}
+function render(){
+  let h="";
+  if(selected){
+    const n=byId.get(selected);
+    const es=E.filter(e=>eid(e.source)===n.id||eid(e.target)===n.id).sort((a,b)=>{const o=x=>byId.get(eid(x.source)===n.id?eid(x.target):eid(x.source)).year;return o(a)-o(b);});
+    const cs=[...new Set(es.map(e=>e.c).filter(Boolean))];
+    h=`<div class="kind" style="color:${colorVar(n.type)}">${TYPES[n.type]}</div>
+      <h2>${esc(n.label)}</h2><div class="year">${n.year} · ${es.length} associações</div>
+      <p>${esc(n.desc)}</p>
+      ${cs.length?`<div class="tags">${cs.map(c=>`<span class="tag">${CONTRO[c].t}</span>`).join("")}</div>`:""}
+      <h3>Rastro</h3><ul class="trail">${es.map(e=>edgeItem(e,n.id)).join("")}</ul>`;
+  }else if(active){
+    const v=CONTRO[active], es=E.filter(e=>e.c===active).sort((a,b)=>byId.get(eid(a.source)).year-byId.get(eid(b.source)).year);
+    h=`<div class="kind" style="color:var(--signal)">Controvérsia</div><h2>${v.t}</h2><p>${v.d}</p>
+      <h3>${es.length} associações em disputa</h3><ul class="trail">${es.map(e=>edgeItem(e,null)).join("")}</ul>`;
+  }else{
+    h=`<h3>Caderno de campo</h3>
+      <div class="stats"><div><b>${N.length}</b><span>actantes</span></div><div><b>${E.length}</b><span>associações</span></div><div><b>${Object.keys(CONTRO).length}</b><span>controvérsias</span></div></div>
+      <p>Clique num nó para seguir suas associações, ou escolha uma controvérsia para ver as linhas em disputa.</p>
+      <p>Troque para <strong>Cronologia</strong> e compare. O mesmo rastro, preso a um eixo de datas, conta outra história.</p>
+      <h3>Para começar</h3><ul class="trail">
+      ${["macy","feedback","hinton","deeplearning","caixapreta","alinhamento"].map(id=>`<li><button data-go="${id}"><strong>${esc(byId.get(id).label)}</strong> <span class="verb">${byId.get(id).deg} associações</span></button></li>`).join("")}</ul>`;
+  }
+  panel.innerHTML=h;
+  panel.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
+}
+render();
+
+let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{W=mapEl.clientWidth;H=mapEl.clientHeight;run();},200);});
+</script>
+
+</body>
+</html>
