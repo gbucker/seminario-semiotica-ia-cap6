@@ -22,7 +22,7 @@ O `index.html` é um arquivo único e roda offline. Sem internet, só as fontes 
 
 ## Roteiro
 
-00 abertura · 01 harness · 02 generativa × agêntica · 03 limite da autonomia · 04 Deleuze & Guattari · 05 Latour · 06 rastros da cibernética · 07 Peirce · 08 da extensão à reversão · 09 Murray · 10 Meadows · 11 agenciamento misto · 12 causalidade · 13 o pássaro em pleno voo · 14 referências · 15 debate
+00 abertura · 01 harness · 02 generativa × agêntica · 03 limite da autonomia · 04 Deleuze & Guattari · 05 Latour · 06 rastros da cibernética · 07 Peirce · 08 da extensão à reversão · 09 Murray · 10 agenciamento misto · 11 causalidade · 12 o pássaro em pleno voo · 13 referências · 14 debate
 
 ## Estrutura
 
