@@ -121,6 +121,34 @@ ul.b li.mine::before{color:var(--m)}
 #cyc .nd text{fill:var(--g);font-size:22px;text-anchor:middle}
 #cyc-info{min-height:120px;font-size:20px;line-height:1.45}
 
+/* orquestração */
+.orq{position:relative;width:860px;height:600px}
+.orq svg{position:absolute;inset:0;pointer-events:none}
+.orq svg line{stroke:#1f3b2f;stroke-width:2;transition:stroke .3s}
+.orq svg line.dn{stroke:var(--g);stroke-dasharray:6 8;animation:dash .5s linear infinite}
+.orq svg line.up{stroke:var(--c);stroke-dasharray:6 8;animation:dash .5s linear infinite reverse}
+.orq svg line.bad{stroke:var(--r);stroke-dasharray:6 8;animation:dash .5s linear infinite reverse}
+@keyframes dash{to{stroke-dashoffset:-14}}
+.ob{position:absolute;border:1px solid var(--rule);background:var(--panel);display:flex;flex-direction:column;transition:opacity .45s,box-shadow .3s,border-color .3s}
+.ob header{font-size:13px;letter-spacing:.08em;padding:4px 10px;color:#031008;background:var(--c);display:flex;justify-content:space-between}
+.ob .bd{padding:8px 10px;font-size:14px;line-height:1.45;overflow:hidden;display:flex;flex-direction:column;gap:3px;flex:1;min-height:0}
+#ob-o{left:170px;top:0;width:520px;height:205px}
+#ob-o header{background:var(--g)}
+#ob-o .bd .u{color:#fff} #ob-o .bd .d{color:var(--dim)} #ob-o .bd .a{color:var(--g)} #ob-o .bd .e{color:var(--r)}
+.sa{top:300px;width:196px;height:250px;opacity:0;cursor:pointer;transform:translateY(-14px)}
+.sa.on{opacity:1;transform:none}
+.sa.act{border-color:var(--g);box-shadow:0 0 16px rgba(57,255,136,.3)}
+.sa.bad{border-color:var(--r);box-shadow:0 0 16px rgba(255,77,94,.45)}
+.sa.sel{outline:2px solid var(--y)}
+#sa-D header{background:var(--y)}
+.sa .tl{color:var(--dim);font-size:12.5px;border-bottom:1px dashed var(--rule);padding-bottom:3px}
+.sa .lg{display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;flex:1;min-height:0;font-size:13px;gap:2px}
+.sa .lg .r{color:var(--dim)}
+.sa .res{color:var(--c);min-height:40px;font-size:13.5px}
+.sa.bad .res{color:var(--r)}
+#orq-st{position:absolute;left:0;right:0;top:566px;font-size:15.5px;color:var(--y)}
+.orqb ul.b{font-size:20px;gap:14px}
+
 /* decode */
 .dec{font-size:24px;line-height:1.5;color:#fff3c4}
 .face{display:flex;gap:12px;margin:18px 0 12px}
@@ -307,6 +335,32 @@ ol.refs b{color:var(--g);font-weight:500}
   </div>
 </section>
 
+<!-- 02b -->
+<section class="slide orqb" data-id="orq" data-title="Orquestração agêntica" data-steps="5">
+  <span class="badge">// leitura do apresentador</span>
+  <h1 class="cmd">orquestrar --subagentes</h1>
+  <div class="cols" style="grid-template-columns:580px 860px;gap:0 34px">
+    <ul class="b">
+      <li class="frag" data-f="1">Um agente que coordena outros agentes. Para o <span class="gr">orquestrador</span>, cada subagente é mais uma ferramenta: uma <span class="k">tool_call</span> que, em vez de chamar uma API, abre outro loop agêntico.</li>
+      <li class="frag" data-f="2"><div class="q" style="font-size:19px"><span class="tr-tag" data-tr="orq"></span><span id="tr-orq"></span><cite>Schluntz &amp; Zhang, 2024, tradução nossa</cite></div></li>
+      <li class="frag" data-f="3">Cada subagente tem <span class="k">seu próprio contexto e suas ferramentas</span>, e roda em paralelo. Devolve só um resumo: o orquestrador não lê tudo o que eles leram.</li>
+      <li class="frag" data-f="4"><span class="gr">Ganhos:</span> paralelismo, especialização, contexto limpo. <span class="er">Custos:</span> mais tokens, coordenação, erros que atravessam camadas.</li>
+      <li class="frag mine" data-f="5">A agência se distribui em camadas: o humano agencia o orquestrador, que agencia os subagentes, que agenciam as ferramentas. <span class="yl">Quem age, aqui?</span></li>
+    </ul>
+    <div class="orq" id="orq">
+      <svg id="orq-svg" width="860" height="600" viewBox="0 0 860 600">
+        <line x1="430" y1="205" x2="98" y2="300"/><line x1="430" y1="205" x2="319" y2="300"/><line x1="430" y1="205" x2="541" y2="300"/><line x1="430" y1="205" x2="762" y2="300"/>
+      </svg>
+      <div class="ob" id="ob-o"><header><span>ORQUESTRADOR · modelo + harness</span><span>simulação</span></header><div class="bd"></div></div>
+      <div class="ob sa" id="sa-A" style="left:0"><header><span>A · leitora</span></header><div class="bd"><div class="tl">obsidian.note_get</div><div class="lg"></div><div class="res"></div></div></div>
+      <div class="ob sa" id="sa-B" style="left:221px"><header><span>B · bibliotecária</span></header><div class="bd"><div class="tl">zotero.get_metadata</div><div class="lg"></div><div class="res"></div></div></div>
+      <div class="ob sa" id="sa-C" style="left:443px"><header><span>C · designer</span></header><div class="bd"><div class="tl">write_file · run_shell</div><div class="lg"></div><div class="res"></div></div></div>
+      <div class="ob sa" id="sa-D" style="left:664px"><header><span>D · verificadora</span></header><div class="bd"><div class="tl">navegador · read</div><div class="lg"></div><div class="res"></div></div></div>
+      <div id="orq-st"></div>
+    </div>
+  </div>
+</section>
+
 <!-- 03 -->
 <section class="slide" data-id="limite" data-title="O limite da autonomia">
   <h1 class="cmd">grep autonomia --context</h1>
@@ -471,7 +525,7 @@ ol.refs b{color:var(--g);font-weight:500}
     <div id="replay" class="box frag" data-f="2"><span class="small">↺ replay · slide 01 · harness</span><br>
       <span class="small">&lt;tool_call&gt;{"name":"get_<span class="er">wether</span>",…}&lt;/tool_call&gt;</span><br>
       <span class="er">✗ erro: ferramenta "get_wether" não existe</span> <span class="gr">→ correção: get_weather</span></div>
-    <div class="q frag" data-f="3" style="margin-top:22px;font-size:25px">o hibridismo cognitivo humano-máquina não é uma ficção ou uma metáfora, mas [...] se assemelha a um pássaro que neste livro buscamos colher em pleno voo<cite>Santaella &amp; Cruz, 2026, p. 114</cite></div>
+    <div class="q frag" data-f="3" style="margin-top:22px;font-size:25px">o hibridismo cognitivo humano-máquina não é uma ficção ou uma metáfora, mas que se assemelha a um pássaro que neste livro buscamos colher em pleno voo<cite>Santaella &amp; Cruz, 2026, p. 114</cite></div>
   </div>
   <canvas id="bird" width="660" height="560"></canvas>
 </section>
@@ -487,6 +541,7 @@ ol.refs b{color:var(--g);font-weight:500}
     <li>SANTAELLA, Lucia. Os conceitos anticartesianos do self em Peirce e Bakhtin. <b>Cognitio</b>: Revista de Filosofia, v. 7, n. 1, p. 121-132, 2006.</li>
     <li>SANTAELLA, Lucia. The neglected argument about C. S. Peirce’s pragmaticism. <b>Estudios de Filosofía</b>, n. 74, p. 188-202, 2026b. DOI: 10.17533/udea.ef.362575.</li>
     <li>SANTAELLA, Lucia; CRUZ, Kalynka. <b>Semiótica da IA</b>: cognições híbridas entre humano e máquina. Barueri, SP: Manole, 2026.</li>
+    <li>SCHLUNTZ, Erik; ZHANG, Barry. Building effective agents. <b>Anthropic Engineering</b>, 19 dez. 2024. Disponível em: https://www.anthropic.com/engineering/building-effective-agents. Acesso em: 20 out. 2026.</li>
     <li>SCOLARI, Carlos A. Comprender la ley de la reversión (I): los humanos como extensiones de los medios. <b>Hipermediaciones</b>, 26 abr. 2026. Disponível em: https://hipermediaciones.com/2026/04/26/comprender-la-ley-de-la-reversion-i-los-humanos-como-extensiones-de-los-medios/.</li>
     <li>VENTURINI, Tommaso; JACOMY, Mathieu; JENSEN, Pablo. What do we see when we look at networks: visual network analysis, relational ambiguity, and force-directed layouts. <b>Big Data &amp; Society</b>, v. 8, n. 1, 2021.</li>
   </ol>
@@ -591,9 +646,10 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg.matches('input,select,tex
 
 /* notes + overview */
 const NOTES={
-abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p>`,
+abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p>`,
 harness:`<p>Um harness tem duas funções: (1) explica ao modelo, num prompt de sistema, o que ele pode fazer; (2) recebe o conteúdo gerado e executa as ações.</p><p>No Qwen, o prompt de sistema traz o bloco &lt;tools&gt; com o JSON de cada ferramenta e pede que cada chamada volte como JSON dentro de &lt;tool_call&gt;&lt;/tool_call&gt;. Esse JSON pode ir para uma API (tempo) ou virar comando de shell: ler e escrever arquivos, criar pastas, editar o sistema.</p><p><b>Atenção ao passo 3:</b> o modelo erra o nome da ferramenta (get_wether). O erro volta pelo harness e o modelo se corrige. Esse erro reaparece no último slide como “erro sintético”.</p>`,
 ciclo:`<p>Santaella e Cruz comparam a geração multimodal das IAs generativas com a ação autônoma das IAs agênticas.</p><p>Ciclo: “perceber, raciocinar, agir e aprender” (p. 98). A IAA tem autonomia na tomada de decisão, mas autonomia é sempre relativa. Clique nas etapas para mapeá-las no loop do harness. “Aprender”, aqui, é aprender em contexto: o erro vira contexto, não retreino.</p>`,
+orq:`<p>Leitura minha, fora do capítulo: depois do agente, a orquestração. Um orquestrador (também um modelo num harness) decompõe a tarefa, delega a subagentes e sintetiza os resultados. Para ele, um subagente é só mais uma ferramenta: uma tool_call que abre outro loop agêntico.</p><p>Schluntz &amp; Zhang (2024), original: “In the orchestrator-workers workflow, a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results.” O mesmo texto distingue <i>workflows</i> (caminhos predefinidos em código) de <i>agentes</i> (o modelo dirige o próprio processo).</p><p>Simulação hipotética: e se este seminário fosse montado por orquestração? Os números de tokens são ilustrativos. Passo 5: a verificadora acha um erro, o orquestrador redelega e o erro é corrigido. Clique num subagente para ver que o contexto dele é isolado.</p><p>Ponte com o capítulo: a agência distribuída em camadas (Latour) e a questão de quem age.</p>`,
 limite:`<p>Citação completa (p. 99): “Todos esses aparentes milagres não podem nos ludibriar na crença de que esse tipo de IA substitui o humano, roubando-o de si. Examinada com cuidado, fica claro que a IAA tem seu desempenho restrito à realização de tarefas que são automatizadas. Certamente, seu uso difere quando se trata da produção de conhecimento científico, jornalístico, acadêmico e nas práticas educacionais, justo esse uso que aqui nos interessa, e que depende da atividade de troca entre usuário e sistema artificial por meio de prompts acionadores do agenciamento cognitivo entre os parceiros.”</p><p>Hibridação: na face generativa, síntese de informações. Na face agêntica, recolher informações do mundo e agir a partir do diálogo com o usuário.</p>`,
 dg:`<p>Deleuze/Guattari: agenciamento como superação de sujeito e estrutura. Subjetivação como uma forma de agenciamento entre outras. “conexões que colocam em funcionamento elementos heterogêneos de várias ordens” (p. 101).</p><p>Plano material/maquínico: o humano amalgamado com a máquina. Plano virtual: contra o desejo da psicanálise, que vem da falta, aqui o desejo é produção e só existe agenciado. Weber fala de agência para resgatar a subjetividade na sociologia.</p>`,
 latour:`<p>Actante, extraído de Greimas: “aquele ou aquilo que faz fazer” (p. 102). Um actante pode se aliar em uma rede para aumentar a força de sua posição. Latour pensa a ciência: actantes são “humanos e não-humanos que formam redes heterogêneas de elementos” (p. 103). Inscrições também são actantes; combinam-se e contrapõem-se.</p><p>Tradução: como um ator recebe uma ação de outro e responde, produzindo mudanças na rede (p. 104). Proposta: dialogar com Deleuze/Guattari numa “teoria agente-rizoma”.</p>`,
@@ -649,6 +705,48 @@ H.ciclo={init(s){const svg=$('#cyc'),cx=320,cy=320,R=220;let h=`<circle cx="${cx
   h+=`<circle id="cyc-dot" r="10" fill="#ff3df2" style="filter:drop-shadow(0 0 8px #ff3df2)"/><text x="${cx}" y="${cy-6}" text-anchor="middle" fill="#6f9a86" font-size="17">loop</text><text x="${cx}" y="${cy+20}" text-anchor="middle" fill="#6f9a86" font-size="17">agêntico</text>`;
   svg.innerHTML=h;$$('.nd',svg).forEach(g=>g.onclick=()=>{$$('.nd',svg).forEach(x=>x.classList.remove('sel'));g.classList.add('sel');$('#cyc-info').innerHTML=CY[+g.dataset.i][1];tc('inspect',{etapa:CY[+g.dataset.i][0]});});},
  tick(t){const dt=cyT?Math.min(50,t-cyT):16;cyT=t;cyA+=dt*.0011;const d=$('#cyc-dot');d.setAttribute('cx',320+220*Math.cos(cyA-Math.PI/2));d.setAttribute('cy',320+220*Math.sin(cyA-Math.PI/2));}};
+
+/* ---------- 02b orquestração ---------- */
+const ORQQ={en:"In the orchestrator-workers workflow, a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results.",
+  pt:"No fluxo orquestrador-trabalhadores, um LLM central decompõe dinamicamente as tarefas, delega-as a LLMs trabalhadores e sintetiza seus resultados."};
+const SA=[
+ {id:'A',task:'ler o fichamento e extrair o cap. 6',ctx:38,run:['note_get("santaella…2026")','↳ 41 KB','buscar "## Capítulo 6"','↳ 9 seções','extrair citações e páginas','↳ 14 citações'],res:'↑ resumo: 9 seções, 14 citações'},
+ {id:'B',task:'reunir as referências em ABNT',ctx:12,run:['search_by_citation_key ×6','↳ 6 itens','get_metadata(bibtex)','↳ ok','formatar em ABNT','↳ 9 referências'],res:'↑ resumo: 9 referências'},
+ {id:'C',task:'montar a página de slides',ctx:64,run:['write_file("template.html")','↳ 85 KB','run_shell("python3 build.py")','↳ index.html','abrir no navegador','↳ 16 slides'],res:'↑ resumo: index.html pronto'},
+ {id:'D',task:'verificar o resultado',ctx:21,run:['abrir slides 00…15','↳ 0 erros de JS','citações × fichamento','↳ 13 de 14 ok','checar o rodapé','↳ ok'],res:'↑ resumo: 1 citação sem página'}];
+const ORQST={0:'',1:'o orquestrador também é um agente: um modelo dentro de um harness',2:'decomposição: a tarefa vira subtarefas',
+ 3:'delegação: cada subagente roda seu próprio loop · clique num subagente para ver o contexto dele',4:'retorno: cada um devolve um resumo, e o orquestrador sintetiza',
+ 5:'verificação: o erro de um subagente volta ao orquestrador e é redistribuído'};
+let orqI=[0,0,0,0],orqLast=0,orqN=0;
+const lnHTML=x=>`<div class="${x.startsWith('↳')?'r':''}">${esc(x)}</div>`;
+function orqO(lines){$('#ob-o .bd').innerHTML=lines.join('');}
+function orqLines(cls){$$('#orq-svg line').forEach((l,i)=>l.setAttribute('class',cls[i]||''));}
+function orqRender(n,jump){G.orq=(G.orq||0)+1;const g=G.orq;orqN=n;
+  const head='<div class="u">tarefa ▸ “montar um seminário sobre o cap. 6”</div>';
+  if(n<=4){const L=[head];if(n===1)L.push('<div class="d">[planejando…]</div>');
+    if(n>=2&&n<=3)L.push('<div class="d">plano:</div>',...SA.map(s=>`<div><span class="k">${s.id}</span> · ${s.task}</div>`));
+    if(n===3)L.push('<div class="a">▸ spawn_agent × 4, em paralelo</div>');
+    if(n===4)L.push('<div class="d">plano: A · B · C · D</div>','<div class="a">▸ spawn_agent × 4, em paralelo</div>','<div class="k">◂ 4 resumos recebidos, não os contextos inteiros</div>','<div class="d">[sintetizando…]</div>');
+    orqO(L);}
+  SA.forEach((s,i)=>{const b=$('#sa-'+s.id);b.classList.toggle('on',n>=3);b.classList.remove('bad','act','sel');
+    $('.lg',b).innerHTML=(n>=4||(n===3&&jump))?s.run.map(lnHTML).join(''):'';$('.res',b).textContent=n>=4?s.res:'';if(n===3)b.classList.add('act');orqI[i]=(n===3&&jump)?99:0;});
+  orqLines(n===3?['dn','dn','dn','dn']:n===4?['up','up','up','up']:[]);
+  $('#orq-st').textContent=ORQST[n]||'';
+  if(n===3&&!jump)SA.forEach(s=>tc('spawn_agent',{subagente:s.id,tarefa:s.task}));
+  if(n>=5){const O=[head,'<div class="k">◂ 4 resumos recebidos</div>'];const A=$('#sa-A'),C=$('#sa-C'),D=$('#sa-D');
+    const seq=[
+     [0,()=>{D.classList.add('bad');O.push('<div class="e">✗ D: citação sem página (slide 08)</div>');orqO(O);orqLines(['','','','bad']);}],
+     [1100,()=>{O.push('<div class="a">▸ redelega a A: “achar a página”</div>');orqO(O);orqLines(['dn','','','']);A.classList.add('act');$('.lg',A).insertAdjacentHTML('beforeend',lnHTML('buscar o trecho no fichamento')+lnHTML('↳ p. 74'));if(!jump)tc('spawn_agent',{subagente:'A',tarefa:'achar a página'});}],
+     [1500,()=>{$('.res',A).textContent='↑ resumo: p. 74';orqLines(['up','dn','','']);orqLines(['up','','dn','']);O.push('<div class="a">▸ C: corrigir e reconstruir</div>');orqO(O);A.classList.remove('act');C.classList.add('act');$('.lg',C).insertAdjacentHTML('beforeend',lnHTML('edit_file(slide 08)')+lnHTML('↳ build ok'));}],
+     [1500,()=>{$('.res',C).textContent='↑ resumo: index.html atualizado';C.classList.remove('act');orqLines(['','','up','dn']);D.classList.remove('bad');D.classList.add('act');$('.lg',D).insertAdjacentHTML('beforeend',lnHTML('reverificar')+lnHTML('↳ 14 de 14 ok'));}],
+     [1400,()=>{$('.res',D).textContent='↑ resumo: ✓ 0 problemas';D.classList.remove('act');orqLines(['','','','up']);O.push('<div class="a">✓ síntese entregue ao humano</div>');orqO(O);}],
+     [1200,()=>{orqLines([]);if(!jump)conLog('↳ orquestração: 5 agentes, 1 erro redistribuído, 1 síntese','ok');}]];
+    if(jump)seq.forEach(([,f])=>f());else (async()=>{for(const [d,f] of seq){await sleep(d);if(G.orq!==g)return;f();}})();}}
+H.orq={init(s){TR.orq=ORQQ;trSet('orq',false);
+  SA.forEach((sa,i)=>$('#sa-'+sa.id).onclick=e=>{e.stopPropagation();if(orqN<3)return;$$('.sa').forEach(b=>b.classList.remove('sel'));$('#sa-'+sa.id).classList.add('sel');
+    $('#orq-st').innerHTML=`contexto de ${sa.id}: próprio e isolado (ilustrativo: ~${sa.ctx} mil tokens) · ao orquestrador volta só o resumo`;tc('inspecionar_subagente',{id:sa.id});});},
+ step(s,n,jump){orqRender(n,jump);if(n>=2&&!jump&&n===2){trSet('orq',false);setTimeout(()=>trAnim('orq',true,2600),700);}else if(n>=2)trSet('orq',true);},
+ tick(t){if(orqN!==3||t-orqLast<380)return;orqLast=t;SA.forEach((s,i)=>{if(orqI[i]<s.run.length&&Math.random()<.7){$('#sa-'+s.id+' .lg').insertAdjacentHTML('beforeend',lnHTML(s.run[orqI[i]]));orqI[i]++;}});}};
 
 /* ---------- 03 limite ---------- */
 const LIMQ="Todos esses aparentes milagres não podem nos ludibriar na crença de que esse tipo de IA substitui o humano, roubando-o de si. Examinada com cuidado, fica claro que a IAA tem seu desempenho restrito à realização de tarefas que são automatizadas. […] justo esse uso que aqui nos interessa, e que depende da atividade de troca entre usuário e sistema artificial por meio de prompts acionadores do agenciamento cognitivo entre os parceiros.";
