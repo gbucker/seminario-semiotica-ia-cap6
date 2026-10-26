@@ -28,6 +28,7 @@ Uma apresentação de slides em HTML único, interativa, para um seminário acad
 - **Animações assíncronas** usam tokens de geração em `G[chave]` para serem canceladas ao trocar de passo. Siga o padrão de `typeText(el, txt, speed, g, key)`.
 - **Console**: `tc(name, args)` registra uma ação como `<tool_call>`, `conLog(html, cls)` escreve uma linha, e os comandos ficam em `runCmd`. Toda nova interação relevante deve chamar `tc(...)`, porque o console encena o harness, que é parte do argumento da apresentação.
 - **Notas do apresentador**: objeto `NOTES[data-id]`.
+- **Modo curto**: o array `SHORT` (lista de `data-id`) define a versão curta, ativada pelo comando `short` e desfeita por `full`. A navegação segue `order()`; ao renomear ou remover um slide, atualize `SHORT`.
 
 ## Estética
 

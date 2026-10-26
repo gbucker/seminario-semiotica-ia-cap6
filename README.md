@@ -18,6 +18,8 @@ Apresentação interativa para um seminário sobre o capítulo 6 de *Semiótica 
 | `:` | console (`goto 7`, `flip`, `help`) |
 | `C` | mostra/oculta o console |
 
+**Versão curta:** na abertura, aperte `:` e digite `short`. A apresentação passa a seguir só orquestração → Deleuze & Guattari → Latour → rastros → Murray → causalidade → fim. `full` volta à versão completa.
+
 O `index.html` é um arquivo único e roda offline. Sem internet, só as fontes caem para a monoespaçada do sistema.
 
 ## Roteiro

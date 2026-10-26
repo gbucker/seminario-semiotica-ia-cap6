@@ -85,11 +85,11 @@ ul.b li.mine::before{color:var(--m)}
 #ov button.here{border-color:var(--m)}
 
 /* abertura */
-.open{position:absolute;left:100px;top:110px;right:100px}
+.open{position:absolute;left:100px;top:90px;right:100px}
 .prompt-line{font-size:26px;color:var(--g);margin-bottom:44px}
 .prompt-line .ps{color:var(--dim)}
 .big{font-family:var(--disp);font-weight:400;font-size:112px;line-height:.92;margin:0 0 20px;color:#eafff3;text-shadow:0 0 22px rgba(57,255,136,.55),0 0 2px #fff}
-.who{margin-top:56px;font-size:22px;line-height:1.55;border-left:3px solid var(--g);padding-left:20px}
+.who{margin-top:30px;font-size:22px;line-height:1.55;border-left:3px solid var(--g);padding-left:20px}
 .who b{color:var(--g);font-weight:500;font-size:26px}
 .who .hy{color:var(--m)}
 .hint{position:absolute;left:100px;bottom:34px;color:var(--dim);font-size:15px}
@@ -600,20 +600,30 @@ const conL=$('#con-lines');
 function conLog(html,cls=''){const d=document.createElement('div');d.className=cls;d.innerHTML=html;conL.appendChild(d);while(conL.children.length>40)conL.firstChild.remove();}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function tc(name,args){conLog(esc(`<tool_call>{"name":"${name}"${args?`,"arguments":${JSON.stringify(args)}`:''}}</tool_call>`),'tc');}
-const TOOLS=['next','prev','goto N','flip','notes','index','clear','help'];
+const TOOLS=['next','prev','goto N','short','full','flip','notes','index','clear','help'];
 function runCmd(raw){const c=raw.trim();if(!c)return;conLog('$ '+esc(c),'mgl');const [cmd,arg]=c.split(/\s+/);
   tc(cmd,arg?{arg}:null);
   if(cmd==='next')next(); else if(cmd==='prev')prev();
   else if(cmd==='goto'&&!isNaN(+arg)){go(Math.max(0,Math.min(slides.length-1,+arg)),0,true);conLog('↳ ok · '+esc(slides[cur].dataset.title),'ok');}
   else if(cmd==='flip'){ if(slides[cur].dataset.id!=='reversao')go(idx('reversao'),0,true); H.reversao.flip(); conLog('↳ ok · quem é extensão de quem?','ok');}
+  else if(cmd==='short'||cmd==='full'){setShort(cmd==='short');}
   else if(cmd==='notes')toggleNotes(); else if(cmd==='index')toggleOv(); else if(cmd==='clear')conL.innerHTML='';
   else if(cmd==='help')conLog('↳ ferramentas: '+TOOLS.join(' · '),'info');
   else conLog(`↳ ✗ erro: ferramenta "${esc(cmd)}" não existe · disponíveis: ${TOOLS.join(', ')}`,'err');}
-$('#con-form').addEventListener('submit',e=>{e.preventDefault();runCmd($('#con-in').value);$('#con-in').value='';});
+$('#con-form').addEventListener('submit',e=>{e.preventDefault();const v=$('#con-in').value;$('#con-in').value='';$('#con-in').blur();runCmd(v);});
 
 /* ---------- engine ---------- */
 const slides=$$('.slide');const idx=id=>slides.findIndex(s=>s.dataset.id===id);
 let cur=0,step=0;const H={};const entered=new Set();
+/* modo curto: sequência reduzida de slides (comando "short" / "full") */
+const SHORT=['abertura','orq','dg','latour','rastros','murray','causal','fim'];
+let seq=null;const order=()=>seq||slides.map((_,i)=>i);
+const nbr=d=>d>0?order().find(i=>i>cur):[...order()].reverse().find(i=>i<cur);
+function setShort(on){seq=on?SHORT.map(idx).filter(i=>i>=0):null;
+  conLog(on?`↳ modo curto: ${seq.length} slides · ${SHORT.join(' → ')}`:'↳ modo completo','ok');
+  if(cur===0){G.ab=(G.ab||0)+1;typeText($('#open-cmd'),'agenciamento --humano --maquina'+(on?' --short':''),40,G.ab,'ab');}
+  else if(on&&!order().includes(cur))go(nbr(1)??0,0,true);
+  ui();}
 const fragsOf=s=>$$('.frag',s).map((f,i)=>[f,+f.dataset.f||i+1]);
 const nSteps=s=>s.dataset.steps?+s.dataset.steps:fragsOf(s).reduce((m,[,n])=>Math.max(m,n),0);
 function applyStep(s,n,jump){fragsOf(s).forEach(([f,k])=>f.classList.toggle('vis',k<=n));const h=H[s.dataset.id];h&&h.step&&h.step(s,n,jump);}
@@ -623,11 +633,11 @@ function go(i,st=0,jump=true){const old=slides[cur];
     const h=H[s.dataset.id];if(!entered.has(s.dataset.id)){entered.add(s.dataset.id);h&&h.init&&h.init(s);} h&&h.enter&&h.enter(s);}
   step=st;applyStep(slides[cur],st,jump);ui();}
 function next(){const s=slides[cur];if(step<nSteps(s)){step++;applyStep(s,step,false);tc('next_fragment',{slide:cur,step});ui();}
-  else if(cur<slides.length-1){go(cur+1,0,false);tc('next_slide',{to:cur});}}
+  else{const j=nbr(1);if(j!=null){go(j,0,false);tc('next_slide',{to:cur});}}}
 function prev(){const s=slides[cur];if(step>0){step--;applyStep(s,step,true);tc('prev_fragment',{slide:cur,step});ui();}
-  else if(cur>0){go(cur-1,nSteps(slides[cur-1]),true);tc('prev_slide',{to:cur});}}
-function ui(){const s=slides[cur],tot=slides.length-1,w=18,f=Math.round(cur/tot*w);
-  $('#prog').innerHTML=`<b>[${'█'.repeat(f)}${'░'.repeat(w-f)}]</b> ${String(cur).padStart(2,'0')}/${tot} · ${s.dataset.title}`;
+  else{const j=nbr(-1);if(j!=null){go(j,nSteps(slides[j]),true);tc('prev_slide',{to:cur});}}}
+function ui(){const s=slides[cur],o=order(),pos=Math.max(0,o.indexOf(cur)),tot=o.length-1,w=18,f=Math.round(pos/tot*w);
+  $('#prog').innerHTML=`<b>[${'█'.repeat(f)}${'░'.repeat(w-f)}]</b> ${String(pos).padStart(2,'0')}/${tot} · ${s.dataset.title}${seq?' · <span class="mg">curto</span>':''}`;
   document.body.className='s-'+s.dataset.id;$('#con').classList.toggle('hid',cur===0);
   if($('#notes').classList.contains('on'))fillNotes();}
 $('#bn').onclick=e=>{e.stopPropagation();next()};$('#bp').onclick=e=>{e.stopPropagation();prev()};
@@ -635,7 +645,7 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg.matches('input,select,tex
   const k=e.key;
   if(['ArrowRight','PageDown',' '].includes(k)){e.preventDefault();next();}
   else if(['ArrowLeft','PageUp'].includes(k)){e.preventDefault();prev();}
-  else if(k==='Home')go(0);else if(k==='End')go(slides.length-1);
+  else if(k==='Home')go(order()[0]);else if(k==='End')go(order().at(-1));
   else if(k==='n'||k==='N')toggleNotes();else if(k==='o'||k==='O')toggleOv();
   else if(k==='c'||k==='C')$('#con').classList.toggle('hid');
   else if(k===':'){e.preventDefault();$('#con').classList.remove('hid');$('#con-in').focus();}
@@ -644,7 +654,7 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg.matches('input,select,tex
 
 /* notes + overview */
 const NOTES={
-abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p>`,
+abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p><p><b>Versão curta:</b> aperte <b>:</b> e digite <b>short</b>. Sequência: orquestração → Deleuze &amp; Guattari → Latour → rastros → Murray → causalidade → fim. <b>full</b> volta à versão completa.</p>`,
 harness:`<p>Um harness tem duas funções: (1) explica ao modelo, num prompt de sistema, o que ele pode fazer; (2) recebe o conteúdo gerado e executa as ações.</p><p>No Qwen, o prompt de sistema traz o bloco &lt;tools&gt; com o JSON de cada ferramenta e pede que cada chamada volte como JSON dentro de &lt;tool_call&gt;&lt;/tool_call&gt;. Esse JSON pode ir para uma API (tempo) ou virar comando de shell: ler e escrever arquivos, criar pastas, editar o sistema.</p><p><b>Atenção ao passo 3:</b> o modelo erra o nome da ferramenta (get_wether). O erro volta pelo harness e o modelo se corrige. Esse erro reaparece no último slide como “erro sintético”.</p>`,
 ciclo:`<p>Santaella e Cruz comparam a geração multimodal das IAs generativas com a ação autônoma das IAs agênticas.</p><p>Ciclo: “perceber, raciocinar, agir e aprender” (p. 98). A IAA tem autonomia na tomada de decisão, mas autonomia é sempre relativa. Clique nas etapas para mapeá-las no loop do harness. “Aprender”, aqui, é aprender em contexto: o erro vira contexto, não retreino.</p>`,
 orq:`<p>Leitura minha, fora do capítulo: depois do agente, a orquestração. Um orquestrador (também um modelo num harness) decompõe a tarefa, delega a subagentes e sintetiza os resultados. Para ele, um subagente é só mais uma ferramenta: uma tool_call que abre outro loop agêntico.</p><p>Schluntz &amp; Zhang (2024), original: “In the orchestrator-workers workflow, a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results.” O mesmo texto distingue <i>workflows</i> (caminhos predefinidos em código) de <i>agentes</i> (o modelo dirige o próprio processo).</p><p>Simulação hipotética: e se este seminário fosse montado por orquestração? Os números de tokens são ilustrativos. Passo 5: a verificadora acha um erro, o orquestrador redelega e o erro é corrigido. Clique num subagente para ver que o contexto dele é isolado.</p><p>Ponte com o capítulo: a agência distribuída em camadas (Latour) e a questão de quem age.</p>`,
@@ -663,7 +673,7 @@ fim:`<p>Abrir para o debate. Contato: gustavo@gbucker.com</p>`};
 function fillNotes(){$('#notes-body').innerHTML=NOTES[slides[cur].dataset.id]||'<p>—</p>';}
 function toggleNotes(){const n=$('#notes');n.classList.toggle('on');if(n.classList.contains('on'))fillNotes();}
 function toggleOv(){const o=$('#ov');o.classList.toggle('on');if(o.classList.contains('on')){
-  $('#ov-grid').innerHTML=slides.map((s,i)=>`<button data-i="${i}" class="${i===cur?'here':''}"><b>${String(i).padStart(2,'0')}</b>${s.dataset.title}</button>`).join('');
+  $('#ov-grid').innerHTML=order().map((i,p)=>`<button data-i="${i}" class="${i===cur?'here':''}"><b>${String(p).padStart(2,'0')}</b>${slides[i].dataset.title}</button>`).join('');
   $$('#ov-grid button').forEach(b=>b.onclick=()=>{o.classList.remove('on');go(+b.dataset.i,0,true);tc('goto',{slide:+b.dataset.i});});}}
 
 /* ---------- 00 abertura ---------- */
