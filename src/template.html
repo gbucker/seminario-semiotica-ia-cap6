@@ -270,6 +270,18 @@ svg.net circle.hot{stroke:var(--m);stroke-width:4}
 #replay{font-size:15px;line-height:1.5}
 #bird{position:absolute;right:60px;top:110px}
 
+/* uso de IA */
+.ia-tab{width:100%;border-collapse:collapse;font-size:15.5px;line-height:1.38;margin-top:4px}
+.ia-tab th{text-align:left;font-weight:400;font-size:12.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--rule);padding:4px 10px}
+.ia-tab td{padding:6px 10px;border-bottom:1px dashed rgba(57,255,136,.16);vertical-align:top}
+.ia-tab td:first-child{color:var(--y);white-space:nowrap;width:210px}
+.ia-tab td.h{color:#ffc2f8} .ia-tab td.a{color:#bfffd9}
+.ia-tab th.h{color:var(--m)} .ia-tab th.a{color:var(--g)}
+.ia-tab tr.row{opacity:0;transform:translateX(-8px);transition:opacity .35s,transform .35s}
+.ia-tab tr.row.in{opacity:1;transform:none}
+.ia-foot{display:flex;justify-content:space-between;gap:30px;margin-top:14px;font-size:16px}
+.ia-foot .resp{color:var(--ink);border-left:3px solid var(--m);padding-left:14px;max-width:820px}
+
 /* refs */
 ol.refs{margin:10px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:14px;font-size:18.5px;line-height:1.45;max-width:1380px}
 ol.refs li{padding-left:22px;text-indent:-22px}
@@ -531,9 +543,34 @@ ol.refs b{color:var(--g);font-weight:500}
 </section>
 
 <!-- 13 -->
+<!-- uso de IA -->
+<section class="slide" data-id="ia" data-title="Uso de IA">
+  <span class="badge">// declaração de uso de IA</span>
+  <h1 class="cmd">cat ai_usage_log.yaml</h1>
+  <table class="ia-tab">
+    <thead><tr><th>etapa</th><th class="h">humano · Gustavo</th><th class="a">IA · Claude Opus 5.5 (Anthropic) · NotebookLM (Google)</th></tr></thead>
+    <tbody>
+      <tr class="row"><td>leitura e fichamento</td><td class="h">leitura e fichamento dos textos</td><td class="a">NotebookLM em anotações de dois fichamentos complementares; uma delas embasa a linha sobre o hábito (slide de causalidade)</td></tr>
+      <tr class="row"><td>recorte e estrutura</td><td class="h">recorte do capítulo, escolha dos complementos, aprovação e ajustes do plano</td><td class="a">Claude fez perguntas e propôs o plano slide a slide</td></tr>
+      <tr class="row"><td>redação dos slides</td><td class="h">comentários próprios (selo magenta), revisão do texto</td><td class="a">Claude redigiu os itens a partir do fichamento</td></tr>
+      <tr class="row"><td>citações</td><td class="h">seleção dos trechos e páginas, no fichamento</td><td class="a">transcrição para os slides</td></tr>
+      <tr class="row"><td>traduções</td><td class="h">revisão</td><td class="a">Claude traduziu Logan, Murray e Schluntz &amp; Zhang</td></tr>
+      <tr class="row"><td>pesquisa</td><td class="h">—</td><td class="a">Claude buscou e conferiu a referência de Schluntz &amp; Zhang (2024)</td></tr>
+      <tr class="row"><td>referências</td><td class="h">acervo e correção dos metadados no Zotero</td><td class="a">Claude montou o ABNT a partir dos metadados</td></tr>
+      <tr class="row"><td>código, visual e simulações</td><td class="h">direção estética e críticas que mudaram slides</td><td class="a">Claude escreveu o HTML, as animações e as simulações; a cartografia de controvérsias também (prompt que virou skill)</td></tr>
+      <tr class="row"><td>publicação e verificação</td><td class="h">criação do repositório, decisão de publicar, conferência final</td><td class="a">Claude fez os commits, ativou o GitHub Pages e testou a navegação</td></tr>
+    </tbody>
+  </table>
+  <div class="ia-foot">
+    <div class="resp">A seleção do capítulo, a interpretação, a argumentação e a fala são do apresentador, que revisou os outputs e responde pela totalidade do conteúdo. “Tradução nossa”, aqui, inclui essa coautoria híbrida.</div>
+    <div class="small" style="font-size:15px;text-align:right">(CLAUDE, versão Opus 5.5, acesso em 30/10/2026)<br>inventário completo: <span class="gr">ai_usage_log.yaml</span> no repositório</div>
+  </div>
+</section>
+
 <section class="slide" data-id="refs" data-title="Referências">
   <h1 class="cmd">cat referencias.bib</h1>
   <ol class="refs">
+    <li>CLAUDE. Versão Opus 5.5. Anthropic, 2026. Disponível em: https://claude.ai. Acesso em: 30 out. 2026.</li>
     <li>MURRAY, Janet H. <b>Hamlet no holodeck</b>: o futuro da narrativa no ciberespaço. Tradução de Elissa Khoury Daher e Marcelo Fernandez Cuzziol. São Paulo: Itaú Cultural: Unesp, 2003.</li>
     <li>MURRAY, Janet H. <b>Hamlet on the holodeck</b>: the future of narrative in cyberspace. Versão atualizada. Londres: MIT Press, 2017.</li>
     <li>PEIRCE, Charles Sanders. <b>The collected papers of Charles Sanders Peirce</b>. Edição de Charles Hartshorne, Paul Weiss e Arthur W. Burks. Edição eletrônica organizada por John Deely. Charlottesville, VA: InteLex Corporation, 1994. Reproduz a edição de Harvard University Press, 1931-1958.</li>
@@ -616,7 +653,7 @@ $('#con-form').addEventListener('submit',e=>{e.preventDefault();const v=$('#con-
 const slides=$$('.slide');const idx=id=>slides.findIndex(s=>s.dataset.id===id);
 let cur=0,step=0;const H={};const entered=new Set();
 /* modo curto: sequência reduzida de slides (comando "short" / "full") */
-const SHORT=['abertura','orq','dg','latour','rastros','murray','causal','fim'];
+const SHORT=['abertura','orq','dg','latour','rastros','murray','causal','ia','fim'];
 let seq=null;const order=()=>seq||slides.map((_,i)=>i);
 const nbr=d=>d>0?order().find(i=>i>cur):[...order()].reverse().find(i=>i<cur);
 function setShort(on){seq=on?SHORT.map(idx).filter(i=>i>=0):null;
@@ -654,7 +691,7 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg.matches('input,select,tex
 
 /* notes + overview */
 const NOTES={
-abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p><p><b>Versão curta:</b> aperte <b>:</b> e digite <b>short</b>. Sequência: orquestração → Deleuze &amp; Guattari → Latour → rastros → Murray → causalidade → fim. <b>full</b> volta à versão completa.</p>`,
+abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p><p><b>Versão curta:</b> aperte <b>:</b> e digite <b>short</b>. Sequência: orquestração → Deleuze &amp; Guattari → Latour → rastros → Murray → causalidade → uso de IA → fim. <b>full</b> volta à versão completa.</p>`,
 harness:`<p>Um harness tem duas funções: (1) explica ao modelo, num prompt de sistema, o que ele pode fazer; (2) recebe o conteúdo gerado e executa as ações.</p><p>No Qwen, o prompt de sistema traz o bloco &lt;tools&gt; com o JSON de cada ferramenta e pede que cada chamada volte como JSON dentro de &lt;tool_call&gt;&lt;/tool_call&gt;. Esse JSON pode ir para uma API (tempo) ou virar comando de shell: ler e escrever arquivos, criar pastas, editar o sistema.</p><p><b>Atenção ao passo 3:</b> o modelo erra o nome da ferramenta (get_wether). O erro volta pelo harness e o modelo se corrige. Esse erro reaparece no último slide como “erro sintético”.</p>`,
 ciclo:`<p>Santaella e Cruz comparam a geração multimodal das IAs generativas com a ação autônoma das IAs agênticas.</p><p>Ciclo: “perceber, raciocinar, agir e aprender” (p. 98). A IAA tem autonomia na tomada de decisão, mas autonomia é sempre relativa. Clique nas etapas para mapeá-las no loop do harness. “Aprender”, aqui, é aprender em contexto: o erro vira contexto, não retreino.</p>`,
 orq:`<p>Leitura minha, fora do capítulo: depois do agente, a orquestração. Um orquestrador (também um modelo num harness) decompõe a tarefa, delega a subagentes e sintetiza os resultados. Para ele, um subagente é só mais uma ferramenta: uma tool_call que abre outro loop agêntico.</p><p>Schluntz &amp; Zhang (2024), original: “In the orchestrator-workers workflow, a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results.” O mesmo texto distingue <i>workflows</i> (caminhos predefinidos em código) de <i>agentes</i> (o modelo dirige o próprio processo).</p><p>Simulação hipotética: e se este seminário fosse montado por orquestração? Os números de tokens são ilustrativos. Passo 5: a verificadora acha um erro, o orquestrador redelega e o erro é corrigido. Clique num subagente para ver que o contexto dele é isolado.</p><p>Ponte com o capítulo: a agência distribuída em camadas (Latour) e a questão de quem age.</p>`,
@@ -668,6 +705,7 @@ murray:`<p>Murray (cap. 5), citada explicitamente no capítulo. Agência: “a c
 misto:`<p>No prompt da IA generativa existe um agenciamento mútuo, com dois agentes cognitivos que se determinam mutuamente. Atividade simultânea entre ler e escrever.</p><p>No diálogo, as palavras em magenta passam de um lado para o outro: cada um reescreve com as palavras do outro.</p>`,
 causal:`<p>A causa pode ser estudada do ponto de vista da imanência, da individuação ou da adição a outras causas. A noção linear vem de Aristóteles e das quatro causas, com o tempo reduzidas à eficiente. Hume. EP I: 299; CP 1.161.</p><p>Para Peirce, a necessidade mecânica não explica a causação nem cria variedade; a natureza cresce em complexidade, com papel da espontaneidade. Três elementos: acaso, causação eficiente, causação final (p. 110).</p><p>Fenômenos ligados à cognição (p. 111): “percepção, intuição, sensação, linguagem, ação, representação, experiência, autocontrole, aprendizagem, compreensão, emoção, criatividade, consciência, conhecimento, planejamento, decisão, raciocínio, cálculo, reconhecimento, memória, orientação, cultura, tradução e, em nosso caso, inteligência humana e seus complementos na IA”.</p><p>Simulação: sem a eficiente, nada se move. O atrator da causa final segue o cursor; o acaso continua desviando. No último passo, clique para parar a chuva de fenômenos.</p>`,
 passaro:`<p>Hickman (2025, apud p. 113): agência estatística, decisão processual, erro sintético.</p><p>O erro sintético a sala já viu: o get_wether do slide 01, corrigido no próprio loop.</p><p>Fechamento (p. 114): “o hibridismo cognitivo humano-máquina não é uma ficção ou uma metáfora, mas que se assemelha a um pássaro que neste livro buscamos colher em pleno voo”.</p>`,
+ia:`<p>Declaração de uso de IA, no formato do inventário (categoria, ferramenta, finalidade, revisão humana). A versão completa está em <b>ai_usage_log.yaml</b> no repositório.</p><p>Uso do NotebookLM: só indireto, numa linha do slide de causalidade (hábito e mudança de hábito como interpretante lógico), que vem de anotações feitas a partir de conversa com o NotebookLM no fichamento do <i>Neglected Argument</i>.</p><p>As traduções foram geradas com o Claude e revisadas por mim.</p>`,
 refs:`<p>Deleuze e Guattari, Weber, Latour, Greimas, Hickman e Logan aparecem via Santaella &amp; Cruz (2026) ou via Scolari, por isso entram como apud e não na lista.</p>`,
 fim:`<p>Abrir para o debate. Contato: gustavo@gbucker.com</p>`};
 function fillNotes(){$('#notes-body').innerHTML=NOTES[slides[cur].dataset.id]||'<p>—</p>';}
@@ -720,8 +758,8 @@ const ORQQ={en:"In the orchestrator-workers workflow, a central LLM dynamically 
 const SA=[
  {id:'A',task:'ler o fichamento e extrair o cap. 6',ctx:38,run:['note_get("santaella…2026")','↳ 41 KB','buscar "## Capítulo 6"','↳ 9 seções','extrair citações e páginas','↳ 14 citações'],res:'↑ resumo: 9 seções, 14 citações'},
  {id:'B',task:'reunir as referências em ABNT',ctx:12,run:['search_by_citation_key ×6','↳ 6 itens','get_metadata(bibtex)','↳ ok','formatar em ABNT','↳ 9 referências'],res:'↑ resumo: 9 referências'},
- {id:'C',task:'montar a página de slides',ctx:64,run:['write_file("template.html")','↳ 85 KB','run_shell("python3 build.py")','↳ index.html','abrir no navegador','↳ 16 slides'],res:'↑ resumo: index.html pronto'},
- {id:'D',task:'verificar o resultado',ctx:21,run:['abrir slides 00…15','↳ 0 erros de JS','citações × fichamento','↳ 13 de 14 ok','checar o rodapé','↳ ok'],res:'↑ resumo: 1 citação sem página'}];
+ {id:'C',task:'montar a página de slides',ctx:64,run:['write_file("template.html")','↳ 85 KB','run_shell("python3 build.py")','↳ index.html','abrir no navegador','↳ 17 slides'],res:'↑ resumo: index.html pronto'},
+ {id:'D',task:'verificar o resultado',ctx:21,run:['abrir slides 00…16','↳ 0 erros de JS','citações × fichamento','↳ 13 de 14 ok','checar o rodapé','↳ ok'],res:'↑ resumo: 1 citação sem página'}];
 const ORQST={0:'',1:'o orquestrador também é um agente: um modelo dentro de um harness',2:'decomposição: a tarefa vira subtarefas',
  3:'delegação: cada subagente roda seu próprio loop · clique num subagente para ver o contexto dele',4:'retorno: cada um devolve um resumo, e o orquestrador sintetiza',
  5:'verificação: o erro de um subagente volta ao orquestrador e é redistribuído'};
@@ -991,6 +1029,10 @@ H.passaro={init(){bp=Array.from({length:220},()=>({x:Math.random()*660,y:Math.ra
   if(bForm&&t-bLast>760){bLast=t;bFrame^=1;bAssign();}
   bp.forEach(p=>{if(p.t){p.x+=(p.t.x-p.x)*.14;p.y+=(p.t.y-p.y)*.14;const near=Math.abs(p.t.x-p.x)+Math.abs(p.t.y-p.y)<6;x.fillStyle=near?'#39ff88':'rgba(57,255,136,.6)';x.fillText(near?p.t.c:rg(),p.x,p.y);}
    else{p.y+=p.v;if(p.y>580){p.y=-20;p.x=Math.random()*660;}if(Math.random()<.05)p.c=rg();x.fillStyle=bForm?'rgba(57,255,136,.12)':'rgba(57,255,136,.35)';x.fillText(p.c,p.x,p.y);}});}};
+
+/* ---------- uso de IA ---------- */
+H.ia={enter(s){G.ia=(G.ia||0)+1;const g=G.ia;const rs=$$('tr.row',s);rs.forEach(r=>r.classList.remove('in'));tc('read_file',{path:'ai_usage_log.yaml'});
+  rs.forEach((r,i)=>setTimeout(()=>{if(G.ia===g)r.classList.add('in');},250+i*220));}};
 
 /* ---------- loop ---------- */
 function loop(t){const h=H[slides[cur].dataset.id];if(h&&h.tick)h.tick(t);rainTick(t);requestAnimationFrame(loop);}

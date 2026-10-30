@@ -43,6 +43,7 @@ Uma apresentação de slides em HTML único, interativa, para um seminário acad
 - Citações diretas são **literais** do fichamento do autor e trazem página no formato `(Autor, ano, p. X)`. Não parafraseie dentro de aspas nem invente páginas.
 - Distinga sempre a voz da Santaella & Cruz das leituras do apresentador (selo magenta).
 - Referências em ABNT, no slide `refs`. Autores citados apenas via apud não entram na lista.
+- **Uso de IA**: qualquer novo uso de IA na produção (texto, tradução, código, pesquisa) deve ser registrado em `ai_usage_log.yaml` e, se mudar o quadro, na tabela do slide `ia`. Não omita usos.
 
 ## Verificação
 

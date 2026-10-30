@@ -1,0 +1,99 @@
+# Inventário de uso de IA na produção desta apresentação
+# Formato: uma entrada por uso. Atualize a cada novo uso (ver AGENTS.md).
+
+trabalho:
+  titulo: "O agenciamento cognitivo entre humano e máquina"
+  tipo: apresentação de seminário (doutorado, TIDD PUC-SP)
+  objeto: "Santaella & Cruz (2026), Semiótica da IA, cap. 6"
+  autor: Gustavo Bonassa Bucker
+  periodo: 2026-10-19 a 2026-10-30
+  diretriz_institucional: nenhuma específica conhecida até 2026-10-30
+
+ferramentas:
+  - nome: Claude
+    versao: Opus 5.5
+    provedor: Anthropic, via app Claude (sessão com ferramentas de agente)
+    nota: modelo configurado na sessão; o modelo que respondeu pode ter variado em algum turno
+    citacao_abnt: "CLAUDE. Versão Opus 5.5. Anthropic, 2026. Disponível em: https://claude.ai. Acesso em: 30 out. 2026."
+  - nome: NotebookLM
+    versao: não identificada
+    provedor: Google
+
+usos:
+  - categoria: B. leitura e fichamento
+    ferramenta: NotebookLM
+    finalidade: >-
+      anotações em dois fichamentos complementares (santaellaNeglectedArgumentPeirces2026,
+      santaellaComputadorComoMidia1996)
+    uso_na_apresentacao: >-
+      indireto, numa linha do slide de causalidade (hábito e mudança de hábito como
+      interpretante lógico, corpo da causação final); nenhuma citação direta vem do NotebookLM
+    revisao_humana: sim
+
+  - categoria: C. estruturação e planejamento
+    ferramenta: Claude
+    finalidade: perguntas de escopo e plano slide a slide a partir do fichamento do cap. 6
+    autoria_humana: recorte do capítulo, escolha dos complementos, aprovação e ajustes do plano
+    revisao_humana: sim
+
+  - categoria: D. redação
+    ferramenta: Claude
+    finalidade: redação dos itens dos slides e das notas do apresentador a partir do fichamento
+    autoria_humana: >-
+      comentários próprios marcados com o selo magenta (harness, teoria da mente, reversão,
+      Murray, orquestração), escolha das citações e revisão de todo o texto
+    revisao_humana: sim
+    grau_de_modificacao: edição pontual, com várias rodadas de crítica que mudaram slides
+
+  - categoria: D. redação (citações)
+    ferramenta: Claude
+    finalidade: transcrição para os slides das citações diretas presentes no fichamento
+    autoria_humana: seleção dos trechos e registro das páginas no fichamento
+    revisao_humana: sim
+
+  - categoria: F. tradução
+    ferramenta: Claude
+    finalidade: >-
+      tradução para o português de Logan (apud Scolari, 2026), Murray (2017, p. 144) e
+      Schluntz & Zhang (2024), exibidas com animação EN → PT
+    revisao_humana: sim
+    nota: no slide aparecem como "tradução nossa", expressão que inclui a coautoria híbrida
+
+  - categoria: A. pesquisa
+    ferramenta: Claude (busca na web)
+    finalidade: localizar e conferir autoria, data e URL de Schluntz & Zhang (2024)
+    revisao_humana: sim
+
+  - categoria: J. verificação / referências
+    ferramenta: Claude
+    finalidade: montar as referências em ABNT a partir dos metadados do Zotero
+    autoria_humana: acervo e correção dos metadados (Collected Papers de Peirce)
+    revisao_humana: sim
+
+  - categoria: H. conteúdo visual e I. programação
+    ferramenta: Claude
+    finalidade: >-
+      todo o HTML, CSS e JavaScript da apresentação: motor de slides, animações, simulações
+      (harness, orquestração, micromundo, partículas, pássaro ASCII), grafos em d3
+    autoria_humana: direção estética e críticas que mudaram slides (flip, Murray, Meadows, orquestração)
+    revisao_humana: sim
+    nota: >-
+      a cartografia "Rastros da cibernética" (slide 07) também foi feita com o Claude Opus 5.5,
+      a partir de um prompt do autor que depois virou a skill cartografia-controversias
+
+  - categoria: I. automação e publicação
+    ferramenta: Claude
+    finalidade: commits neste repositório, ativação do GitHub Pages, testes de navegação em navegador automático
+    autoria_humana: criação do repositório, decisão de publicar, conferência final
+    revisao_humana: sim
+
+autoria_integral_do_apresentador:
+  - seleção do capítulo e do recorte
+  - leitura e fichamento dos textos
+  - interpretação e argumentação
+  - comentários próprios (selo magenta)
+  - a fala no seminário
+
+responsabilidade: >-
+  O apresentador revisou os outputs gerados por IA e se responsabiliza pela totalidade
+  do conteúdo apresentado.
