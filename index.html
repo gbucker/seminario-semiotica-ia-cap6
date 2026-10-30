@@ -639,13 +639,14 @@ const conL=$('#con-lines');
 function conLog(html,cls=''){const d=document.createElement('div');d.className=cls;d.innerHTML=html;conL.appendChild(d);while(conL.children.length>40)conL.firstChild.remove();}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function tc(name,args){conLog(esc(`<tool_call>{"name":"${name}"${args?`,"arguments":${JSON.stringify(args)}`:''}}</tool_call>`),'tc');}
-const TOOLS=['next','prev','goto N','short','full','flip','notes','index','clear','help'];
+const TOOLS=['next','prev','goto N','link','short','full','flip','notes','index','clear','help'];
 function runCmd(raw){const c=raw.trim();if(!c)return;conLog('$ '+esc(c),'mgl');const [cmd,arg]=c.split(/\s+/);
   tc(cmd,arg?{arg}:null);
   if(cmd==='next')next(); else if(cmd==='prev')prev();
   else if(cmd==='goto'&&!isNaN(+arg)){go(Math.max(0,Math.min(slides.length-1,+arg)),0,true);conLog('↳ ok · '+esc(slides[cur].dataset.title),'ok');}
   else if(cmd==='flip'){ if(slides[cur].dataset.id!=='reversao')go(idx('reversao'),0,true); H.reversao.flip(); conLog('↳ ok · quem é extensão de quem?','ok');}
   else if(cmd==='short'||cmd==='full'){setShort(cmd==='short');}
+  else if(cmd==='link'){const u=location.href;try{navigator.clipboard.writeText(u).then(()=>conLog('↳ link copiado: '+esc(u),'ok'),()=>conLog('↳ link: '+esc(u),'info'));}catch(e){conLog('↳ link: '+esc(u),'info');}}
   else if(cmd==='notes')toggleNotes(); else if(cmd==='index')toggleOv(); else if(cmd==='clear')conL.innerHTML='';
   else if(cmd==='help')conLog('↳ ferramentas: '+TOOLS.join(' · '),'info');
   else conLog(`↳ ✗ erro: ferramenta "${esc(cmd)}" não existe · disponíveis: ${TOOLS.join(', ')}`,'err');}
@@ -677,7 +678,8 @@ function prev(){const s=slides[cur];if(step>0){step--;applyStep(s,step,true);tc(
   else{const j=nbr(-1);if(j!=null){go(j,nSteps(slides[j]),true);tc('prev_slide',{to:cur});}}}
 function ui(){const s=slides[cur],o=order(),pos=Math.max(0,o.indexOf(cur)),tot=o.length-1,w=18,f=Math.round(pos/tot*w);
   $('#prog').innerHTML=`<b>[${'█'.repeat(f)}${'░'.repeat(w-f)}]</b> ${String(pos).padStart(2,'0')}/${tot} · ${s.dataset.title}${seq?' · <span class="mg">curto</span>':''}`;
-  document.body.className='s-'+s.dataset.id;$('#con').classList.toggle('hid',cur===0);
+  document.body.className='s-'+s.dataset.id;
+  const hh='#'+s.dataset.id;if(location.hash!==hh)history.replaceState(null,'',cur===0?location.pathname+location.search:hh);$('#con').classList.toggle('hid',cur===0);
   if($('#notes').classList.contains('on'))fillNotes();}
 $('#bn').onclick=e=>{e.stopPropagation();next()};$('#bp').onclick=e=>{e.stopPropagation();prev()};
 addEventListener('keydown',e=>{const tg=e.target;if(tg.matches('input,select,textarea')){if(e.key==='Escape')tg.blur();return;}
@@ -693,7 +695,7 @@ addEventListener('keydown',e=>{const tg=e.target;if(tg.matches('input,select,tex
 
 /* notes + overview */
 const NOTES={
-abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p><p><b>Versão curta:</b> aperte <b>:</b> e digite <b>short</b>. Sequência: orquestração → Deleuze &amp; Guattari → Latour → rastros → Murray → causalidade → uso de IA → fim. <b>full</b> volta à versão completa.</p>`,
+abertura:`<p>Seminário só sobre o cap. 6. Percurso: harness → ciclo agêntico → orquestração → limite da autonomia → agenciamento humano (Deleuze &amp; Guattari, Latour) → Peirce → reversão → agência (Murray) → agenciamento misto → causalidade → “pássaro em pleno voo”.</p><p>Slides com o selo magenta são leituras minhas, não da autora.</p><p><b>Versão curta:</b> aperte <b>:</b> e digite <b>short</b>. Sequência: orquestração → Deleuze &amp; Guattari → Latour → rastros → Murray → causalidade → uso de IA → fim. <b>full</b> volta à versão completa.</p><p><b>Links:</b> cada slide tem âncora (#orq, #murray, #causal…). O comando <b>link</b> copia o link do slide atual; <b>?short</b> no endereço abre já no modo curto.</p>`,
 harness:`<p>Um harness tem duas funções: (1) explica ao modelo, num prompt de sistema, o que ele pode fazer; (2) recebe o conteúdo gerado e executa as ações.</p><p>No Qwen, o prompt de sistema traz o bloco &lt;tools&gt; com o JSON de cada ferramenta e pede que cada chamada volte como JSON dentro de &lt;tool_call&gt;&lt;/tool_call&gt;. Esse JSON pode ir para uma API (tempo) ou virar comando de shell: ler e escrever arquivos, criar pastas, editar o sistema.</p><p><b>Atenção ao passo 3:</b> o modelo erra o nome da ferramenta (get_wether). O erro volta pelo harness e o modelo se corrige. Esse erro reaparece no último slide como “erro sintético”.</p>`,
 ciclo:`<p>Santaella e Cruz comparam a geração multimodal das IAs generativas com a ação autônoma das IAs agênticas.</p><p>Ciclo: “perceber, raciocinar, agir e aprender” (p. 98). A IAA tem autonomia na tomada de decisão, mas autonomia é sempre relativa. Clique nas etapas para mapeá-las no loop do harness. “Aprender”, aqui, é aprender em contexto: o erro vira contexto, não retreino.</p>`,
 orq:`<p>Leitura minha, fora do capítulo: depois do agente, a orquestração. Um orquestrador (também um modelo num harness) decompõe a tarefa, delega a subagentes e sintetiza os resultados. Para ele, um subagente é só mais uma ferramenta: uma tool_call que abre outro loop agêntico.</p><p>Schluntz &amp; Zhang (2024), original: “In the orchestrator-workers workflow, a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results.” O mesmo texto distingue <i>workflows</i> (caminhos predefinidos em código) de <i>agentes</i> (o modelo dirige o próprio processo).</p><p>Simulação hipotética: e se este seminário fosse montado por orquestração? Os números de tokens são ilustrativos. Passo 5: a verificadora acha um erro, o orquestrador redelega e o erro é corrigido. Clique num subagente para ver que o contexto dele é isolado.</p><p>Ponte com o capítulo: a agência distribuída em camadas (Latour) e a questão de quem age.</p>`,
@@ -713,11 +715,11 @@ fim:`<p>Abrir para o debate. Contato: gustavo@gbucker.com</p>`};
 function fillNotes(){$('#notes-body').innerHTML=NOTES[slides[cur].dataset.id]||'<p>—</p>';}
 function toggleNotes(){const n=$('#notes');n.classList.toggle('on');if(n.classList.contains('on'))fillNotes();}
 function toggleOv(){const o=$('#ov');o.classList.toggle('on');if(o.classList.contains('on')){
-  $('#ov-grid').innerHTML=order().map((i,p)=>`<button data-i="${i}" class="${i===cur?'here':''}"><b>${String(p).padStart(2,'0')}</b>${slides[i].dataset.title}</button>`).join('');
+  $('#ov-grid').innerHTML=order().map((i,p)=>`<button data-i="${i}" class="${i===cur?'here':''}"><b>${String(p).padStart(2,'0')}</b>${slides[i].dataset.title}<span style="display:block;color:var(--dim);font-size:13px;margin-top:4px">#${slides[i].dataset.id}</span></button>`).join('');
   $$('#ov-grid button').forEach(b=>b.onclick=()=>{o.classList.remove('on');go(+b.dataset.i,0,true);tc('goto',{slide:+b.dataset.i});});}}
 
 /* ---------- 00 abertura ---------- */
-H.abertura={enter(s){G.ab=(G.ab||0)+1;typeText($('#open-cmd'),'agenciamento --humano --maquina',55,G.ab,'ab');},
+H.abertura={enter(s){G.ab=(G.ab||0)+1;typeText($('#open-cmd'),'agenciamento --humano --maquina'+(seq?' --short':''),55,G.ab,'ab');},
  init(s){s.addEventListener('click',e=>{if(e.target.closest('button,a,select,input'))return;rainFrozen=!rainFrozen;});}};
 
 /* ---------- 01 harness ---------- */
@@ -1186,7 +1188,13 @@ H.ia={enter(s){G.ia=(G.ia||0)+1;const g=G.ia;const rs=$$('tr.row',s);rs.forEach(
 
 /* ---------- loop ---------- */
 function loop(t){const h=H[slides[cur].dataset.id];if(h&&h.tick)h.tick(t);rainTick(t);requestAnimationFrame(loop);}
-go(0,0,false);requestAnimationFrame(loop);
+/* âncoras: #id abre o slide completo; #id/n abre no passo n; ?short liga o modo curto */
+function readHash(){const [id,st]=decodeURIComponent(location.hash.slice(1)).split('/');const i=id?idx(id):-1;if(i<0)return false;
+  const n=nSteps(slides[i]);go(i,st!==undefined&&!isNaN(+st)?Math.max(0,Math.min(+st,n)):n,true);tc('abrir_ancora',{slide:id});return true;}
+addEventListener('hashchange',readHash);
+if(new URLSearchParams(location.search).has('short'))seq=SHORT.map(idx).filter(i=>i>=0);
+if(!readHash())go(0,0,false);
+requestAnimationFrame(loop);
 conLog('agente pronto · ferramentas: '+TOOLS.join(' · '),'info');
 </script>
 </body>

@@ -22,6 +22,28 @@ Apresentação interativa para um seminário sobre o capítulo 6 de *Semiótica 
 
 O `index.html` é um arquivo único e roda offline. Sem internet, só as fontes caem para a monoespaçada do sistema.
 
+**Links para slides:** cada slide tem uma âncora com o próprio identificador. O link abre o slide já completo; `#id/n` abre no passo `n`. No console, `link` copia o link do slide atual. `?short` no endereço abre direto no modo curto (ex.: `?short#murray`).
+
+| # | slide | âncora |
+|---|---|---|
+| 00 | abertura | [`#abertura`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#abertura) |
+| 01 | harness | [`#harness`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#harness) |
+| 02 | generativa × agêntica | [`#ciclo`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#ciclo) |
+| 03 | orquestração agêntica | [`#orq`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#orq) |
+| 04 | limite da autonomia | [`#limite`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#limite) |
+| 05 | Deleuze & Guattari | [`#dg`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#dg) |
+| 06 | Latour | [`#latour`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#latour) |
+| 07 | rastros da cibernética | [`#rastros`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#rastros) |
+| 08 | Peirce | [`#peirce`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#peirce) |
+| 09 | da extensão à reversão | [`#reversao`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#reversao) |
+| 10 | Murray | [`#murray`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#murray) |
+| 11 | agenciamento misto | [`#misto`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#misto) |
+| 12 | causalidade | [`#causal`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#causal) |
+| 13 | o pássaro em pleno voo | [`#passaro`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#passaro) |
+| 14 | uso de IA | [`#ia`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#ia) |
+| 15 | referências | [`#refs`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#refs) |
+| 16 | debate | [`#fim`](https://gbucker.github.io/seminario-semiotica-ia-cap6/#fim) |
+
 ## Roteiro
 
 00 abertura · 01 harness · 02 generativa × agêntica · 03 orquestração agêntica · 04 limite da autonomia · 05 Deleuze & Guattari · 06 Latour · 07 rastros da cibernética · 08 Peirce · 09 da extensão à reversão · 10 Murray · 11 agenciamento misto · 12 causalidade · 13 o pássaro em pleno voo · 14 uso de IA · 15 referências · 16 debate
